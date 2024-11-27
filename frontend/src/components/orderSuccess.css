@@ -1,0 +1,34 @@
+.order-success-container {
+    text-align: center;
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 600px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.order-success-container h1 {
+    color: #28a745;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.order-success-container p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.order-success-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.order-success-container button:hover {
+    background-color: #0056b3;
+}

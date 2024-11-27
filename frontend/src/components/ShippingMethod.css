@@ -1,0 +1,118 @@
+.shipping-method-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.shipping-method-container h2,
+.shipping-method-container h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.shipping-method-container label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.shipping-method-container input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.shipping-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.shipping-buttons button {
+    flex: 1;
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.shipping-buttons button:hover {
+    background-color: #45a049;
+}
+
+.shipping-buttons .back-button {
+    background-color: #b0b0b0;
+}
+
+.shipping-buttons .back-button:hover {
+    background-color: #a0a0a0;
+}
+
+/* Szállítási adatok űrlap stílusa */
+.delivery-form, .locker-form {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    margin-top: -1rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+.delivery-form label,
+.locker-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.delivery-form input,
+.locker-form select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.locker-form select option {
+    padding: 0.5rem;
+}
+
+/* Animáció az űrlap megjelenítéséhez */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobil reszponzivitás */
+@media (max-width: 768px) {
+    .shipping-method-container {
+        padding: 1rem;
+    }
+
+    .shipping-buttons button {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .delivery-form, .locker-form {
+        padding: 0.8rem;
+    }
+}

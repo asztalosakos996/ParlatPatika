@@ -1,0 +1,52 @@
+.edit-category {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-category h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.edit-category form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.edit-category label {
+    font-weight: bold;
+    color: #555;
+}
+
+.edit-category input,
+.edit-category textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.edit-category textarea {
+    resize: vertical;
+}
+
+.edit-category button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.edit-category button:hover {
+    background-color: #45a049;
+}

@@ -1,0 +1,123 @@
+.popular-products {
+    position: relative;
+    overflow: hidden;
+}
+
+
+.product-tile {
+    flex: 0 0 auto;
+    width: 200px;
+    margin: 0 10px;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    text-decoration: none; /* Link formázás eltüntetése */
+    color: inherit; /* Szöveg színe az alapértelmezett marad */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Egérmutató jelzi, hogy kattintható */
+    position: relative;
+    overflow: hidden; /* A kép csak a kereten belül maradjon */
+}
+
+.product-tile:hover {
+    transform: scale(1.05); /* Kiemelés hoverre */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Erősebb árnyék */
+}
+
+.product-tile img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    transition: transform 0.3s ease; /* Kép animáció hoverre */
+}
+
+.product-tile:hover img {
+    transform: scale(1.1); /* Kép nagyítása hoverre */
+}
+
+.product-tile h3 {
+    margin: 10px 0 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.product-tile:hover h3 {
+    color: #007bff; /* Szöveg színének változtatása hoverre */
+}
+
+.product-tile p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Link körüli alapértelmezett stílus eltüntetése */
+.product-tile a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Animáció a termékkártyák között */
+@keyframes scrollRight {
+    0% {
+        transform: translateX(0); /* Kezdeti pozíció */
+    }
+    100% {
+        transform: translateX(-100%); /* Végpont */
+    }
+}
+
+/* Görgetősáv stílusok */
+.product-slider {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding-bottom: 20px; /* Az alján helyet hagyunk */
+}
+
+.product-track {
+    display: flex;
+    cursor: grab;
+    transition: transform 0.3s ease-in-out;
+}
+
+.product-track:active {
+    cursor: grabbing;
+    transition: none;
+}
+
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scroll-button.left {
+    left: 10px;
+}
+
+.scroll-button.right {
+    right: 10px;
+}
+
+.scroll-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+

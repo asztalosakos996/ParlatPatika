@@ -1,0 +1,28 @@
+.checkout-process {
+    padding: 20px;
+}
+
+.progress-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.step {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    text-align: center;
+    flex: 1;
+    margin-right: 5px;
+}
+
+.step:last-child {
+    margin-right: 0;
+}
+
+.step.active {
+    background-color: #4caf50;
+    color: white;
+}

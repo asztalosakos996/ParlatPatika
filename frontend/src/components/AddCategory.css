@@ -1,0 +1,40 @@
+.add-category-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.add-category-form h2 {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.add-category-form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.add-category-form input,
+.add-category-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-category-form button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-category-form button:hover {
+    background-color: #218838;
+}

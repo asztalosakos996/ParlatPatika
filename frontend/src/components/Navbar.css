@@ -1,0 +1,302 @@
+/* Alap stílusok (desktop) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+    position: relative;
+    z-index: 1000;
+}
+
+.logo-image {
+    height: 60px; /* Állítsd be a kívánt magasságot */
+    width: auto; /* Automatikus szélesség a megfelelő arány megtartásához */
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.line {
+    height: 3px;
+    width: 25px;
+    background-color: white;
+    margin: 3px 0;
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+}
+
+.nav-links.open {
+    max-height: 300px;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.navbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.navbar-icons i {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.navbar-icons i:hover {
+    color: #ddd;
+}
+
+/* Keresősáv */
+.search-bar {
+    margin-left: auto;
+    padding: 5px;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Modális ablak stílusok */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #444;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: white;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal:hover {
+    outline: none; /* Desktop nézetben a hover nem zárja be a modált */
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.modal form label {
+    margin-top: 10px;
+}
+
+.modal form input {
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #777;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+}
+
+.modal form button {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #555;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.modal form button:hover {
+    background-color: #666;
+}
+
+/* Felhasználói menü stílus (desktop) */
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #444;
+    color: white;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    z-index: 1000;
+}
+
+.user-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.user-dropdown li {
+    margin-bottom: 10px;
+}
+
+.user-dropdown li a {
+    color: white;
+    text-decoration: none;
+}
+
+.user-dropdown li a:hover {
+    text-decoration: underline;
+}
+
+.user-dropdown button {
+    width: 100%;
+    background-color: #555;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.user-dropdown button:hover {
+    background-color: #666;
+}
+
+/* Hamburger menü alapbeállítása */
+.hamburger-menu {
+    display: none;
+}
+
+.cart-link {
+    text-decoration: none; /* Távolítsd el az aláhúzást */
+    color: inherit; /* Örökli a szülő színét */
+    display: flex; /* Ha a számlálóval egy vonalba akarod helyezni */
+    align-items: center; /* Függőlegesen középre igazítja a tartalmat */
+    gap: 5px; /* Ikon és számláló közötti távolság */
+}
+
+/* Kosár ikon hover effekt (opcionális) */
+.cart-link:hover {
+    color: #333; /* Példa: sötétszürke szín hover esetén */
+}
+
+/* Kosár ikon stílus */
+.cart-link i {
+    font-size: 1.5rem; /* Példa: nagyobb ikonméret */
+}
+
+/* Kosár számláló */
+.cart-link .cart-count {
+    background-color: #ff0000; /* Piros háttér */
+    color: #fff; /* Fehér szöveg */
+    font-size: 0.8rem; /* Szöveg mérete */
+    border-radius: 50%; /* Kör alakú megjelenés */
+    padding: 2px 6px; /* Számláló mérete */
+    margin-left: 5px; /* Távolság az ikontól */
+}
+
+/* Mobil nézethez oldalról beúszás */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background-color: #333;
+        max-height: 0;
+        overflow: hidden;
+    }
+
+    .nav-links.open {
+        max-height: 300px;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    /* Hamburger menü (balról nyíló) */
+    .hamburger-menu {
+        position: fixed;
+        top: 0;
+        left: -250px; /* Alapértelmezett helyzet kívül a képernyőn */
+        height: 100%;
+        width: 250px; /* Szélesség */
+        background-color: #444; /* Háttérszín */
+        transition: right 0.3s ease; /* Simább animáció */
+        z-index: 10000; /* Magasabb rétegre helyezés */
+        overflow-y: auto; /* Ha sok elem lenne */
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Árnyék */
+    }
+
+    .hamburger-menu.show {
+        left: 0;
+    }
+
+    .hamburger-menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .hamburger-menu li {
+        margin: 15px;
+    }
+
+    .hamburger-menu a {
+        color: white;
+        text-decoration: none;
+        font-size: 1.2rem;
+    }
+
+    .hamburger-menu a:hover {
+        text-decoration: underline;
+    }
+
+    /* Jobbról nyíló felhasználói menü */
+    .user-dropdown {
+        position: fixed;
+        top: 0;
+        right: 0px;
+        height: 100%;
+        width: 250px;
+        background-color: #444;
+        transition: right 0.3s ease;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .user-dropdown.show {
+        right: 0;
+    }
+}

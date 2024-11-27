@@ -1,0 +1,83 @@
+.add-product-form {
+    background-color: #fff; /* Egységes fehér háttér */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Finom árnyék */
+    max-width: 500px; /* Azonos szélesség a kategória formával */
+    margin: 0 auto; /* Középre igazítás */
+    font-family: 'Poppins', sans-serif; /* Modern betűtípus */
+    color: #333; /* Alap szöveg szín */
+}
+
+.add-product-form h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #333; /* Letisztult szürke cím */
+}
+
+.add-product-form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 500; /* Félkövér szöveg a címkékhez */
+    color: #555; /* Halványabb szürke szín */
+}
+
+.add-product-form input,
+.add-product-form textarea,
+.add-product-form select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc; /* Szürke szegély */
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1rem; /* Egységes méret */
+}
+
+.add-product-form input:focus,
+.add-product-form textarea:focus,
+.add-product-form select:focus {
+    border-color: #28a745; /* Zöld szegély fókuszban */
+    outline: none;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* Zöld fókusz árnyék */
+}
+
+.add-product-form button {
+    background-color: #28a745; /* Zöld háttér */
+    color: #fff; /* Fehér szöveg */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    text-transform: uppercase;
+    width: 100%; /* Gomb teljes szélességű */
+}
+
+.add-product-form button:hover {
+    background-color: #218838; /* Sötétebb zöld hover állapot */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Kiemelt árnyék hover állapotban */
+}
+
+.success-message {
+    background-color: #d4edda; /* Halvány zöld háttér */
+    color: #155724; /* Sötét zöld szöveg */
+    border: 1px solid #c3e6cb;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.error-message {
+    background-color: #f8d7da; /* Halvány piros háttér */
+    color: #721c24; /* Sötét piros szöveg */
+    border: 1px solid #f5c6cb;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-weight: 500;
+}
