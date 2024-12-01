@@ -17,11 +17,13 @@ const ContactInfo = ({ onNext, initialData }) => {
 
     // Bejelentkezett felhasználó adatainak betöltése
     useEffect(() => {
+        console.log("InitialData értéke:", initialData);
+    
         const fetchUserData = async () => {
             try {
                 setLoading(true);
                 const token = localStorage.getItem('token');
-
+    
                 const response = await fetch('http://localhost:5000/api/users/details', {
                     method: 'GET',
                     headers: {
@@ -29,36 +31,36 @@ const ContactInfo = ({ onNext, initialData }) => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
-                const data = await response.json();
-
+    
                 if (response.ok) {
-                    const { email, name, phone, address } = data;
+                    const data = await response.json();
+                    console.log("Lekért adatok:", data);
                     setFormData({
-                        email,
-                        name,
-                        phone,
-                        address: address?.street || '',
-                        city: address?.city || '',
-                        postalCode: address?.postalCode || '',
+                        email: data.email || '',
+                        name: data.name || '',
+                        phone: data.phone || '',
+                        address: data.address?.street || '',
+                        city: data.address?.city || '',
+                        postalCode: data.address?.postalCode || '',
                     });
                 } else {
-                    setError(data.message || 'Hiba történt az adatok betöltésekor.');
+                    console.error("Hiba történt a fetch során:", response.statusText);
                 }
             } catch (error) {
-                setError('Hiba történt az adatok betöltésekor.');
+                console.error("Hálózati hiba:", error);
             } finally {
                 setLoading(false);
             }
         };
-
-        // Csak akkor hívja meg az API-t, ha nincs inicializált adat
-        if (!initialData) {
-            fetchUserData();
-        } else {
+    
+        if (initialData) {
+            console.log("InitialData használata az API hívás helyett.");
             setFormData(initialData);
+        } else {
+            fetchUserData();
         }
     }, [initialData]);
+    
 
     // Mezők értékének frissítése
     const handleChange = (e) => {

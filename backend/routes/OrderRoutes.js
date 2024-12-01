@@ -1,12 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Order = require('../models/Order');
+const { sendOrderConfirmation } = require('../services/emailService');
 
 const router = express.Router();
 
 // Új rendelés létrehozása
 router.post('/', async (req, res) => {
-    console.log('Received order data:', req.body); // Logolás a beérkező adatok ellenőrzésére
+    console.log('Received order data:', req.body);
 
     const { userId, contactInfo, shippingMethod, paymentMethod, items, totalAmount } = req.body;
 
@@ -21,9 +22,24 @@ router.post('/', async (req, res) => {
         });
 
         const savedOrder = await newOrder.save();
+
+        // Rendelési visszaigazolás e-mail küldése
+        if (contactInfo.email) {
+            try {
+                await sendOrderConfirmation(contactInfo.email, {
+                    items,
+                    contactInfo,
+                    totalAmount,
+                });
+                console.log('Rendelési visszaigazolás elküldve.');
+            } catch (emailError) {
+                console.error('Hiba az e-mail küldésekor:', emailError.message);
+            }
+        }
+
         res.status(201).json(savedOrder);
     } catch (error) {
-        console.error('Order save error:', error);
+        console.error('Hiba történt a rendelés mentése során:', error);
         res.status(500).json({ message: 'Hiba történt a rendelés mentése során.', error: error.message });
     }
 });

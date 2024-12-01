@@ -48,10 +48,8 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
         setUseBillingData(isChecked);
 
         if (isChecked) {
-            // Ha a jelölőnégyzet be van pipálva, a számlázási adatokat másolja
             setDeliveryDetails(billingData);
         } else {
-            // Ha a jelölőnégyzet ki van pipálva, a szállítási adatokat üríti
             setDeliveryDetails({
                 name: '',
                 address: '',
@@ -63,10 +61,10 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (method === 'Futárszolgálat') {
-            onNext({ method, deliveryDetails });
-        } else if (method === 'Csomagpont') {
-            onNext({ method, lockerLocation });
+        if (method === 'futarszolgalat') {
+            onNext({ shippingMethod: method, deliveryDetails });
+        } else if (method === 'csomagpont') {
+            onNext({ shippingMethod: method, lockerLocation });
         } else {
             onNext(method);
         }
@@ -78,27 +76,26 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
             <label>
                 <input
                     type="radio"
-                    value="Futárszolgálat"
-                    checked={method === 'Futárszolgálat'}
+                    value="futarszolgalat"
+                    checked={method === 'futarszolgalat'}
                     onChange={handleChange}
                 />
-                Futárszolgálat
+                Futárszolgálat (+1490 Ft)
             </label>
             <label>
                 <input
                     type="radio"
-                    value="Csomagpont"
-                    checked={method === 'Csomagpont'}
+                    value="csomagpont"
+                    checked={method === 'csomagpont'}
                     onChange={(e) => {
                         handleChange(e);
                         if (!availableLockers.length) fetchLockers();
                     }}
                 />
-                Csomagpont
+                Csomagpont (+990 Ft)
             </label>
 
-            {/* Futárszolgálat adatok */}
-            {method === 'Futárszolgálat' && (
+            {method === 'futarszolgalat' && (
                 <div className="delivery-form">
                     <h3>Szállítási adatok</h3>
                     <label>
@@ -117,7 +114,7 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
                             value={deliveryDetails.name}
                             onChange={handleDeliveryChange}
                             required
-                            disabled={useBillingData} // Ha számlázási adatokat használ, a mezők legyenek inaktívak
+                            disabled={useBillingData}
                         />
                     </label>
                     <label>
@@ -156,8 +153,7 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
                 </div>
             )}
 
-            {/* Csomagautomata kiválasztó */}
-            {method === 'Csomagpont' && (
+            {method === 'csomagpont' && (
                 <div className="locker-form">
                     <h3>Válassz egy csomagautomatát</h3>
                     {isLoadingLockers ? (
