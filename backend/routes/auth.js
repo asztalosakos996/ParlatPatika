@@ -11,6 +11,14 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     const { name, email, password, phone, address } = req.body;
 
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Za-z]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+        return res.status(400).json({
+      message:
+        'A jelszónak legalább 8 karakter hosszúnak kell lennie, és tartalmaznia kell legalább egy számot, egy speciális karaktert (!@#$%^&*)',
+        });
+    } 
+
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -39,8 +47,6 @@ router.post('/register', async (req, res) => {
 // Bejelentkezés
 router.post('/login', async (req, res) => {
     console.log("Belépett a bejelentkezési funkcióba");
-    console.log('Backendbe érkező email:', req.body.email);
-    console.log('Backendbe érkező jelszó:', req.body.password);
     const { email, password } = req.body;
 
     try {
@@ -49,7 +55,6 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'A megadott email cím nem létezik.' });
         }
 
-        // Használd a model metódusát a jelszó ellenőrzésére
         const isMatch = await user.comparePassword(password.trim());
         if (!isMatch) {
             console.log('Bejelentkezési kérés jelszó:', password);
@@ -90,8 +95,6 @@ router.get('/details', verifyUser, async (req, res) => {
         res.status(500).json({ message: 'Hiba történt.' });
     }
 });
-
-
 
 
 // Felhasználói adatok módosítása

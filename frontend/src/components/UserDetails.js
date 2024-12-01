@@ -29,11 +29,11 @@ const UserDetails = () => {
                     setUserData(data);
                     setFormData({
                         name: data.name,
-                        phoneNumber: data.phoneNumber,
+                        phone: data.phone,
                         street: data.address?.street,
                         city: data.address?.city,
                         postalCode: data.address?.postalCode,
-                    }); // Az űrlap alapértékei
+                    });
                 } else {
                     setError(data.message);
                 }
@@ -57,7 +57,7 @@ const UserDetails = () => {
                 },
                 body: JSON.stringify({
                     name: formData.name,
-                    phoneNumber: formData.phoneNumber,
+                    phone: formData.phone,
                     address: {
                         street: formData.street,
                         city: formData.city,
@@ -157,8 +157,8 @@ const UserDetails = () => {
                     Telefonszám:
                     <input
                         type="text"
-                        name="phoneNumber"
-                        value={formData.phoneNumber || ''}
+                        name="phone"
+                        value={formData.phone || ''}
                         onChange={handleChange}
                         required
                     />

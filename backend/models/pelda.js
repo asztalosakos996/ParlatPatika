@@ -1,25 +1,11 @@
-const ProductSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    price: { type: Number, required: true },
-  });
-  
-const Product = mongoose.model('Product', ProductSchema);
+function sumPrices(products) {
+    return products.reduce((total, product) => total + product.price, 0);
+}
 
+function calculateTotalPrice(products) {
+    return sumPrices(products);
+}
 
-
-const OrderSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    total: Number,
-    items: [
-      {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-        quantity: Number,
-      },
-    ],
-    createdAt: { type: Date, default: Date.now },
-  });
-  
-  const Order = mongoose.model('Order', OrderSchema);
-
-  
-  
+function calculateAveragePrice(products) {
+    return sumPrices(products) / products.length;
+}

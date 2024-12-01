@@ -25,7 +25,10 @@ const Navbar = () => {
     const [registerError, setRegisterError] = useState(null);
 
     const userMenuRef = useRef(null);
+    const hamburgerMenuRef = useRef(null);
+
     const [showUserMenu, setShowUserMenu] = useState(false);
+    
 
     const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
@@ -60,6 +63,24 @@ const Navbar = () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, [isMobileView, showUserMenu]);
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (
+                hamburgerMenuRef.current &&
+                !hamburgerMenuRef.current.contains(event.target) &&
+                showHamburgerMenu
+            ) {
+                setShowHamburgerMenu(false);
+            }
+        };
+    
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        };
+    }, [showHamburgerMenu]);
+    
 
     const handleLoginOpen = () => setShowLoginModal(true);
     const handleLoginClose = () => setShowLoginModal(false);
@@ -161,7 +182,9 @@ const Navbar = () => {
             </div>
 
             {/* Hamburger menü (mobil) */}
-            <div className={`hamburger-menu ${showHamburgerMenu ? 'open' : ''}`}>
+            <div className={`hamburger-menu ${showHamburgerMenu ? 'open' : ''}`}
+                ref={hamburgerMenuRef}
+            >
                 <ul>
                     <li><Link to="#categories" onClick={toggleHamburgerMenu}>Kategóriák</Link></li>
                     <li><Link to="#popular-products" onClick={toggleHamburgerMenu}>Népszerű termékek</Link></li>

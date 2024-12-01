@@ -82,23 +82,41 @@ const ProductPage = () => {
         <div className="product-page-container">
             <div className="product-details-wrapper">
                 <div className="product-image-section">
-                    <img src={`http://localhost:5000${product.image}`} alt={product.name} className="product-image" />
+                    <img
+                        src={`http://localhost:5000${product.image}`}
+                        alt={product.name}
+                        className="product-image"
+                    />
                 </div>
                 <div className="product-details-section">
                     <h1>{product.name}</h1>
                     <p>{product.description}</p>
                     <div className="product-info">
-                        <p><strong>Alkoholtartalom:</strong> {product.alcoholContent}</p>
-                        <p><strong>Űrtartalom:</strong> {product.bottleSize}</p>
+                        <p>
+                            <strong>Alkoholtartalom:</strong> {product.alcoholContent}
+                        </p>
+                        <p>
+                            <strong>Űrtartalom:</strong> {product.bottleSize}
+                        </p>
                     </div>
                     <div className="product-price">
                         <h2>{product.price} HUF</h2>
                     </div>
-                    <button className="add-to-cart-button" onClick={() => addToCart(product)}>Kosárba rakom</button>
+                    <button className="add-to-cart-button" onClick={() => addToCart(product)}>
+                        Kosárba rakom
+                    </button>
                     {isAdmin && (
                         <div className="admin-actions">
-                            <i className="fas fa-edit" title="Szerkesztés" onClick={() => navigate(`/edit-product/${productId}`)}></i>
-                            <i className="fas fa-trash-alt" title="Törlés" onClick={handleDelete}></i>
+                            <i
+                                className="fas fa-edit"
+                                title="Szerkesztés"
+                                onClick={() => navigate(`/edit-product/${productId}`)}
+                            ></i>
+                            <i
+                                className="fas fa-trash-alt"
+                                title="Törlés"
+                                onClick={handleDelete}
+                            ></i>
                         </div>
                     )}
                 </div>
@@ -109,7 +127,9 @@ const ProductPage = () => {
                 {reviews.length > 0 ? (
                     reviews.map((review, index) => (
                         <div key={index} className="review-card">
-                            <p><strong>{review.user?.username || 'Névtelen felhasználó'}</strong></p>
+                            <p>
+                                <strong>{review.user?.username || 'Névtelen felhasználó'}</strong>
+                            </p>
                             <div className="review-rating">
                                 {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                             </div>
@@ -128,18 +148,23 @@ const ProductPage = () => {
                             maxLength={500}
                         />
                         <div className="rating-select">
-                            <label htmlFor="rating">Értékelés:</label>
-                            <select
-                                id="rating"
-                                value={newRating}
-                                onChange={(e) => setNewRating(parseInt(e.target.value))}
-                            >
-                                <option value={1}>1 - Nagyon rossz</option>
-                                <option value={2}>2 - Rossz</option>
-                                <option value={3}>3 - Közepes</option>
-                                <option value={4}>4 - Jó</option>
-                                <option value={5}>5 - Kiváló</option>
-                            </select>
+                            <label>Értékelés:</label>
+                            <div className="star-rating">
+                                {Array.from({ length: 5 }, (_, index) => {
+                                    const starIndex = index + 1;
+                                    return (
+                                        <span
+                                            key={starIndex}
+                                            className={`star ${newRating >= starIndex ? 'active' : ''}`}
+                                            onMouseEnter={() => setNewRating(starIndex)}
+                                            onMouseLeave={() => setNewRating(newRating)}
+                                            onClick={() => setNewRating(starIndex)}
+                                        >
+                                            ★
+                                        </span>
+                                    );
+                                })}
+                            </div>
                         </div>
                         <button onClick={handleAddReview}>Értékelés hozzáadása</button>
                     </div>

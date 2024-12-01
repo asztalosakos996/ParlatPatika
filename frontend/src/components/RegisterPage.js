@@ -16,18 +16,35 @@ const RegisterPage = () => {
         acceptTerms: false,
     });
 
+    const [passwordRequirements, setPasswordRequirements] = useState({
+        length: false,
+        number: false,
+        specialChar: false,
+    });
+
+    const validatePassword = (password) => {
+        setPasswordRequirements({
+            length: password.length >= 8,
+            number: /\d/.test(password),
+            specialChar: /[!@#$%^&*.-_]/.test(password),
+        });
+    };
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [name]: type === 'checkbox' ? checked : value,
         }));
+
+        if (name === 'password') {
+            validatePassword(value);
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        // Egyszerű validálás
         if (formData.password !== formData.confirmPassword) {
             alert('A jelszavaknak egyezniük kell!');
             return;
@@ -57,7 +74,6 @@ const RegisterPage = () => {
     
             if (response.ok) {
                 alert('Sikeres regisztráció! Most már bejelentkezhet.');
-                // Irányítsd át a felhasználót a bejelentkezési oldalra
                 window.location.href = '/login';
             } else {
                 alert(`Hiba történt a regisztráció során: ${result.message}`);
@@ -79,6 +95,17 @@ const RegisterPage = () => {
 
                     <label>Jelszó:</label>
                     <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+                    <ul style={{ listStyleType: 'none', padding: 0 }}>
+                        <li style={{ color: passwordRequirements.length ? 'green' : 'red' }}>
+                            {passwordRequirements.length ? '✓' : '✗'} Legalább 8 karakter
+                        </li>
+                        <li style={{ color: passwordRequirements.number ? 'green' : 'red' }}>
+                            {passwordRequirements.number ? '✓' : '✗'} Legalább egy szám
+                        </li>
+                        <li style={{ color: passwordRequirements.specialChar ? 'green' : 'red' }}>
+                            {passwordRequirements.specialChar ? '✓' : '✗'} Legalább egy speciális karakter (!@#$%^&*.-_)
+                        </li>
+                    </ul>
 
                     <label>Jelszó megerősítése:</label>
                     <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
@@ -118,7 +145,13 @@ const RegisterPage = () => {
                     </label>
                 </div>
 
-                <button type="submit" className="register-button">Regisztráció</button>
+                <button
+                    type="submit"
+                    className="register-button"
+                    disabled={!Object.values(passwordRequirements).every(Boolean)}
+                >
+                    Regisztráció
+                </button>
             </form>
         </div>
     );

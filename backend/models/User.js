@@ -40,9 +40,7 @@ userSchema.pre('save', async function (next) {
         return next();
     }
     try {
-        console.log('Jelszó hash-elése előtt:', this.password);
         this.password = await argon2.hash(this.password);
-        console.log('Hashelt jelszó:', this.password);
         next();
     } catch (err) {
         console.error('Hiba történt a jelszó hash-elése során:', err);
@@ -53,10 +51,7 @@ userSchema.pre('save', async function (next) {
 // Jelszó ellenőrzése belépéskor
 userSchema.methods.comparePassword = async function (password) {
     try {
-        console.log('Beérkező jelszó ellenőrzéshez:', password);
-        console.log('Adatbázisban tárolt jelszó:', this.password);
         const isMatch = await argon2.verify(this.password, password);
-        console.log('Jelszó egyezés:', isMatch);
         return isMatch;
     } catch (err) {
         console.error('Hiba történt a jelszó ellenőrzése során:', err);

@@ -29,14 +29,16 @@ app.use(
     helmet.contentSecurityPolicy({
         directives: {
             defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "https://fonts.googleapis.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            styleSrc: ["'self'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
+            scriptSrc: ["'self'", "https://cdnjs.cloudflare.com"],
         },
     })
 );
 
+
 // Alap útvonalak
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Webshop API működik!');
 });
 
@@ -51,9 +53,6 @@ mongoose.connect(process.env.MONGO_URL)
 
 // Útvonalak
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-
-
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
@@ -65,6 +64,14 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api/users', authRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 
+// Frontend build fájlok kiszolgálása
+const frontendPath = path.join(__dirname, '../frontend/build');
+app.use(express.static(frontendPath));
+
+// Minden más útvonal kiszolgálása a React index.html fájlával
+app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+});
 
 // Szerver indítása
 app.listen(PORT, () => {
