@@ -1,33 +1,29 @@
-/* Kategória oldal konténer */
 .category-page-container {
     padding: 2rem;
     display: flex;
     gap: 1rem;
 }
 
-/* Szűrőpanel alapstílusa */
 .filters {
-    flex: 0 0 250px; /* Fix szélesség */
+    flex: 0 0 250px;
     padding: 1rem;
     background-color: #f9f9f9;
     border-radius: 8px;
     border: 1px solid #ddd;
-    height: auto; /* Automatikusan igazodjon a tartalomhoz */
+    height: auto;
     display: flex;
-    flex-direction: column; /* Vertikális elrendezés */
-    gap: 1rem; /* Távolság az elemek között */
+    flex-direction: column;
+    gap: 1rem;
     text-align: left;
 }
 
-/* Keresőmező (Név szerinti szűrés) */
 .filters input[type="text"] {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-/* Ár csúszka és input mezők */
 .filters label {
     display: block;
     font-weight: bold;
@@ -36,7 +32,7 @@
 }
 
 .filters input[type="number"] {
-    width: 100%; /* Szélesség teljesen kitöltse a panelt */
+    width: 100%;
     margin-top: 0.5rem;
     padding: 5px;
     border: 1px solid #ccc;
@@ -46,7 +42,7 @@
 .slider-track {
     background: #ddd;
     height: 5px;
-    margin: 2rem 0; /* Távolság a szövegtől */
+    margin: 2rem 0;
     position: relative;
 }
 
@@ -67,7 +63,6 @@
     font-size: 0.9rem;
 }
 
-/* Checkbox szűrők (Típus és Származási hely) */
 .filters .checkbox-filters h4 {
     font-size: 1rem;
     margin-bottom: 0.5rem;
@@ -75,70 +70,94 @@
 }
 
 .filters .checkbox-filters label {
-    display: flex; /* Flexbox használata az igazításhoz */
-    align-items: center; /* A checkbox és a szöveg középre igazítása vertikálisan */
-    margin-bottom: 0.5rem; /* Távolság az egyes sorok között */
-    cursor: pointer; /* Jobb UX, mutatja, hogy kattintható */
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
     text-align: left;
 }
 
 .filters .checkbox-filters label input {
-    margin-right: 0.5rem; /* Távolság a szöveg és a checkbox között */
+    margin-right: 0.5rem;
 }
 
 
-/* Termékek rács */
+
 .products-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Rugalmas oszlopok */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
 }
 
-/* Termékkártyák */
+
 .product-card {
     background-color: #f9f9f9;
     border: 1px solid #ccc;
     border-radius: 8px;
     overflow: hidden;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 300px; /* Fixált magasság */
+    height: 350px;
+    max-width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
 }
 
 .product-card:hover {
     transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
 
 .product-card img {
     width: 100%;
-    height: 150px; /* Fixált kép magasság */
-    object-fit: cover;
+    height: 200px;
+    object-fit: contain; 
+    padding: 10px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
 }
 
+
 .product-card h3 {
-    padding: 0.5rem;
-    margin: 0;
     font-size: 1rem;
+    color: #333;
+    margin: 10px 0 5px;
+    padding: 0 5px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+
+.product-card p {
+    font-size: 1rem;
+    color: black;
+    margin: 5px 0;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .product-card button {
-    background-color: #f90;
+    background-color: orange;
     color: white;
     border: none;
+    padding: 10px 15px;
     border-radius: 5px;
-    padding: 10px;
-    font-size: 1rem;
     cursor: pointer;
-    margin: 10px;
+    font-size: 1em;
+    margin: 10px auto;
+    width: calc(100% - 20px);
     transition: background-color 0.3s ease;
 }
 
 .product-card button:hover {
     background-color: #e68a00;
 }
+
 
 /* Reszponzív mobilos nézet */
 @media (max-width: 768px) {
@@ -154,6 +173,6 @@
     }
 
     .products-grid {
-        grid-template-columns: repeat(2, 1fr); /* Mobilon két oszlop */
+        grid-template-columns: repeat(2, 1fr);
     }
 }

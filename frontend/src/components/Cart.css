@@ -1,7 +1,7 @@
 .cart-page {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Távolság a fő tartalom és a kuponkártya között */
+    gap: 20px;
 }
 
 .cart-container {
@@ -25,7 +25,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 300px; /* Állítsd be az üres állapot magasságát */
+    height: 300px;
 }
 
 
@@ -40,13 +40,13 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 20px; /* Távolság a kosár és a kuponkártya között */
+    gap: 20px;
 }
 
 .cart-main {
     display: flex;
     flex-direction: column;
-    flex: 2; /* Arány a kosár számára */
+    flex: 2;
 }
 
 .cart-items {
@@ -155,8 +155,8 @@
 }
 
 .coupon-container {
-    flex: 1; /* A kuponkártya szélességének aránya */
-    max-width: 300px; /* Állítsd be a megfelelő szélességet */
+    flex: 1;
+    max-width: 300px;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
@@ -170,7 +170,7 @@
 }
 
 .apply-coupon-button {
-    background-color: #28a745; /* Zöld szín */
+    background-color: #28a745;
     color: white;
     padding: 8px 15px;
     border: none;
@@ -180,5 +180,5 @@
 }
 
 .apply-coupon-button:hover {
-    background-color: #218838; /* Sötétebb zöld szín hover állapotban */
+    background-color: #218838;
 }

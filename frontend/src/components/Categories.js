@@ -10,7 +10,7 @@ const Categories = () => {
             try {
                 const response = await fetch('http://localhost:5000/api/categories');
                 const data = await response.json();
-                console.log('Kategóriák:', data); // Ellenőrizd, hogy a `imageUrl` mező helyes
+                console.log('Kategóriák:', data);
                 setCategories(data);
             } catch (error) {
                 console.error('Hiba történt a kategóriák lekérésekor:', error);

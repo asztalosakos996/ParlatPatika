@@ -43,3 +43,7 @@
 .contact-info-container button:hover {
     background-color: #45a049;
 }
+
+.checkbox-container label{
+    text-align: center;
+}

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import './AdminOrdersPage.css'; // Külön CSS fájl a stílusokhoz
+import './AdminOrdersPage.css';
 
 const AdminOrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Szűrők állapotai
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
     const [selectedShippingMethod, setSelectedShippingMethod] = useState('');
 
@@ -80,8 +79,6 @@ const AdminOrdersPage = () => {
                     </select>
                 </label>
             </div>
-
-            {/* Táblázat */}
             <table>
                 <thead>
                     <tr>
@@ -104,7 +101,7 @@ const AdminOrdersPage = () => {
                         <td>{order.paymentMethod || 'Nincs adat'}</td>
                         <td>
                             {order.shippingMethod?.method || 'Nincs adat'}
-                            {/* Ha szeretnéd megjeleníteni a szállítási részleteket: */}
+                            {/* Szállítási adatok */}
                         </td>
                         <td>{order.status || 'Nincs adat'}</td>
                         </tr>

@@ -6,12 +6,11 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState(() => {
-        // Kosár inicializálása `localStorage`-ból, ha van tárolva
         const savedCart = localStorage.getItem('cart');
         return savedCart ? JSON.parse(savedCart) : [];
     });
 
-    // Kosár mentése `localStorage`-ba minden változásnál
+
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
     }, [cart]);
@@ -19,16 +18,16 @@ export const CartProvider = ({ children }) => {
     const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
     const addToCart = (product) => {
-        // Azonosítás az `_id` mező alapján
+  
         const existingProductIndex = cart.findIndex((item) => item._id === product._id);
     
         if (existingProductIndex !== -1) {
-            // Ha a termék már a kosárban van, növeljük a mennyiségét
+
             const updatedCart = [...cart];
             updatedCart[existingProductIndex].quantity += 1;
             setCart(updatedCart);
         } else {
-            // Ha új terméket adunk hozzá, inicializáljuk a `quantity`-t 1-re
+
             setCart([...cart, { ...product, quantity: 1 }]);
         }
     };

@@ -1,0 +1,18 @@
+.my-orders {
+    padding: 20px;
+}
+
+.order-item {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.order-item h4 {
+    margin-top: 10px;
+}
+
+.order-item ul {
+    padding-left: 20px;
+}

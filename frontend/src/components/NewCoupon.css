@@ -44,7 +44,6 @@
     background-color: #218838;
 }
 
-/* Hibakezeléshez vagy sikeres üzenetekhez */
 .new-coupon-form .success-message,
 .new-coupon-form .error-message {
     text-align: center;

@@ -14,28 +14,28 @@
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 10px;
-    text-decoration: none; /* Link formázás eltüntetése */
-    color: inherit; /* Szöveg színe az alapértelmezett marad */
+    text-decoration: none;
+    color: inherit;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer; /* Egérmutató jelzi, hogy kattintható */
+    cursor: pointer;
     position: relative;
-    overflow: hidden; /* A kép csak a kereten belül maradjon */
+    overflow: hidden;
 }
 
 .product-tile:hover {
-    transform: scale(1.05); /* Kiemelés hoverre */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Erősebb árnyék */
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .product-tile img {
     max-width: 100%;
     height: auto;
     border-radius: 4px;
-    transition: transform 0.3s ease; /* Kép animáció hoverre */
+    transition: transform 0.3s ease;
 }
 
 .product-tile:hover img {
-    transform: scale(1.1); /* Kép nagyítása hoverre */
+    transform: scale(1.1);
 }
 
 .product-tile h3 {
@@ -47,7 +47,7 @@
 }
 
 .product-tile:hover h3 {
-    color: #007bff; /* Szöveg színének változtatása hoverre */
+    color: #007bff;
 }
 
 .product-tile p {
@@ -55,29 +55,29 @@
     color: #666;
 }
 
-/* Link körüli alapértelmezett stílus eltüntetése */
+
 .product-tile a {
     text-decoration: none;
     color: inherit;
 }
 
-/* Animáció a termékkártyák között */
+
 @keyframes scrollRight {
     0% {
-        transform: translateX(0); /* Kezdeti pozíció */
+        transform: translateX(0);
     }
     100% {
-        transform: translateX(-100%); /* Végpont */
+        transform: translateX(-100%);
     }
 }
 
-/* Görgetősáv stílusok */
+
 .product-slider {
     display: flex;
     overflow: hidden;
     width: 100%;
     position: relative;
-    padding-bottom: 20px; /* Az alján helyet hagyunk */
+    padding-bottom: 20px;
 }
 
 .product-track {

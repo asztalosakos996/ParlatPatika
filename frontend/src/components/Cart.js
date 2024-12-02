@@ -10,11 +10,9 @@ const Cart = () => {
     const [discount, setDiscount] = useState(0);
     const [couponError, setCouponError] = useState('');
 
-    // Összes ár kiszámítása kuponkedvezmény figyelembevételével
     const totalAmount = cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
     const discountedTotal = totalAmount - discount;
 
-    // Kupon érvényesítése
     const handleApplyCoupon = async () => {
         try {
             const response = await fetch('http://localhost:5000/api/coupons/validate', {
@@ -42,7 +40,6 @@ const Cart = () => {
         }
     };
 
-    // Funkció a "Tovább a pénztárhoz" gomb kezelésére
     const handleCheckout = () => {
         navigate('/checkout');
     };

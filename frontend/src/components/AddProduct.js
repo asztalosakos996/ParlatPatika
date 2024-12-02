@@ -14,7 +14,7 @@ const AddProduct = () => {
     const [image, setImage] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [aiLoading, setAiLoading] = useState(false); // Új állapot az AI generálásához
+    const [aiLoading, setAiLoading] = useState(false);
     const [aiError, setAiError] = useState('');
 
     // Kategóriák lekérése a backendtől

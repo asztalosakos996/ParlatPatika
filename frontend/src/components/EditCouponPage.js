@@ -3,18 +3,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 //import './EditCouponPage.css';
 
 const EditCouponPage = () => {
-    const { couponId } = useParams(); // URL-ből kapott kupon ID
+    const { couponId } = useParams();
     console.log('Coupon ID:', couponId);
     const navigate = useNavigate();
     const [coupon, setCoupon] = useState({
         code: '',
         discount: '',
-        discountType: 'fixed', // Alapértelmezett érték
+        discountType: 'fixed',
         expirationDate: ''
     });
     const [error, setError] = useState(null);
 
-    // Kupon adatok betöltése
     useEffect(() => {
         const fetchCoupon = async () => {
             try {
@@ -53,7 +52,7 @@ const EditCouponPage = () => {
                 throw new Error('Nem sikerült frissíteni a kupont.');
             }
             alert('Kupon sikeresen frissítve.');
-            navigate('/admin/manage-coupons'); // Vissza a kuponkezeléshez
+            navigate('/admin/manage-coupons');
         } catch (err) {
             setError(err.message);
         }
@@ -101,7 +100,7 @@ const EditCouponPage = () => {
                     <input
                         type="date"
                         name="expirationDate"
-                        value={coupon.expirationDate.split('T')[0]} // Csak a dátumot jeleníti meg
+                        value={coupon.expirationDate.split('T')[0]}
                         onChange={handleChange}
                         required
                     />

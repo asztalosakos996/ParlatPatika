@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Link.css'; // opcionális: ha van külön CSS fájl a stílusokhoz
+import './Link.css';
 
 const Link = ({ to, children, className }) => {
     const navigate = useNavigate();
 
     const handleClick = (e) => {
-        e.preventDefault(); // megakadályozza az alapértelmezett viselkedést
-        navigate(to); // navigál az új útvonalra
+        e.preventDefault();
+        navigate(to);
     };
 
     return (

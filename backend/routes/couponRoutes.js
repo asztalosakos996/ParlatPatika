@@ -38,7 +38,7 @@ router.get('/:id', async (req, res) => {
         if (!coupon) {
             return res.status(404).json({ message: 'A kupon nem található.' });
         }
-        res.status(200).json(coupon); // Visszaküldi a megtalált kupont
+        res.status(200).json(coupon);
     } catch (error) {
         console.error('Hiba történt a kupon lekérésekor:', error);
         res.status(500).json({ message: 'Hiba történt a kupon lekérésekor.' });
@@ -63,7 +63,7 @@ router.delete('/:id', async (req, res) => {
 
 // Kuponkód ellenőrzése
 router.post('/validate', async (req, res) => {
-    const { code, totalAmount } = req.body; // A frontend küldi a teljes összeget is
+    const { code, totalAmount } = req.body;
     try {
         const coupon = await Coupon.findOne({ code, isActive: true });
         if (!coupon) {
@@ -77,9 +77,9 @@ router.post('/validate', async (req, res) => {
 
         let discountAmount = 0;
         if (coupon.discountType === 'percentage') {
-            discountAmount = (totalAmount * coupon.discount) / 100; // Százalékos kedvezmény számítása
+            discountAmount = (totalAmount * coupon.discount) / 100;
         } else if (coupon.discountType === 'fixed') {
-            discountAmount = coupon.discount; // Fix összegű kedvezmény
+            discountAmount = coupon.discount;
         }
 
         res.status(200).json({ discount: discountAmount });
@@ -98,7 +98,7 @@ router.put('/:couponId', async (req, res) => {
         const updatedCoupon = await Coupon.findByIdAndUpdate(
             couponId,
             { code, discount, discountType, expirationDate },
-            { new: true } // Visszaadja a frissített dokumentumot
+            { new: true }
         );
         if (!updatedCoupon) {
             return res.status(404).json({ message: 'A kupon nem található.' });

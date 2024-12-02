@@ -22,8 +22,8 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-    const [orderStats, setOrderStats] = useState(Array(12).fill(0)); // Alapértelmezett 0 értékekkel
-    const [openGroup, setOpenGroup] = useState(null); // Nyitott csoport nyomon követése
+    const [orderStats, setOrderStats] = useState(Array(12).fill(0));
+    const [openGroup, setOpenGroup] = useState(null);
 
     useEffect(() => {
         const fetchOrderStats = async () => {

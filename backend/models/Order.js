@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, // Nem kötelező
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
     contactInfo: {
         email: { type: String, required: true },
         name: { type: String, required: true },
@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema({
         },
     ],
     totalAmount: { type: Number, required: true },
-    status: { type: String, default: 'Pending' },
+    status: { type: String, default: 'Feldolgozás alatt' },
     createdAt: { type: Date, default: Date.now },
 });
 

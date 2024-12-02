@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './BlogPosts.css';
 
 const BlogPosts = () => {
@@ -28,6 +29,7 @@ const BlogPosts = () => {
                         {blog.imageUrl && <img src={`http://localhost:5000${blog.imageUrl}`} alt={blog.title} />}
                         <h3>{blog.title}</h3>
                         <p>{blog.content.substring(0, 100)}...</p>
+                        <Link to={`/blogs/${blog._id}`} className="read-more-link">Olvass tovább</Link>
                     </div>
                 ))}
             </div>

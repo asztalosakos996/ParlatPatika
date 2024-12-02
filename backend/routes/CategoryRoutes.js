@@ -9,7 +9,7 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../uploads')); // Biztosítja, hogy az uploads a backend mappában legyen
+        cb(null, path.join(__dirname, '../uploads'));
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -48,7 +48,7 @@ router.get('/:id', async (req, res) => {
 // Új kategória hozzáadása
 router.post('/', upload.single('image'), async (req, res) => {
     const { name, description } = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : ''; // A feltöltött kép URL-je
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
 
     try {
         const newCategory = new Category({ name, imageUrl, description });
@@ -69,7 +69,7 @@ router.put('/:id', async (req, res) => {
         const updatedCategory = await Category.findByIdAndUpdate(
             req.params.id,
             { name, description },
-            { new: true } // A frissített dokumentum visszaadása
+            { new: true }
         );
 
         if (!updatedCategory) {

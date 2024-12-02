@@ -68,7 +68,7 @@ const UserDetails = () => {
             const data = await response.json();
             if (response.ok) {
                 setSuccessMessage('Adatok sikeresen frissítve.');
-                setUserData(data.user); // Frissített adat megjelenítése
+                setUserData(data.user);
             } else {
                 setError(data.message);
             }
@@ -135,8 +135,8 @@ const UserDetails = () => {
             const data = await response.json();
             if (response.ok) {
                 alert('A fiókod sikeresen törölve.');
-                localStorage.removeItem('token'); // Kijelentkeztetés
-                navigate('/'); // Visszairányítás a kezdőoldalra
+                localStorage.removeItem('token');
+                navigate('/');
             } else {
                 setError(data.message);
             }

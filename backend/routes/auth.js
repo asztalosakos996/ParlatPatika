@@ -11,7 +11,7 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     const { name, email, password, phone, address } = req.body;
 
-    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Za-z]).{8,}$/;
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*._-])(?=.*[A-Za-z]).{8,}$/;
         if (!passwordRegex.test(password)) {
         return res.status(400).json({
       message:
@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
 
         // JWT token generálás a isAdmin mezővel együtt
         const token = jwt.sign(
-            { id: user._id, isAdmin: user.isAdmin, email: user.email }, // isAdmin hozzáadása
+            { id: user._id, isAdmin: user.isAdmin, email: user.email },
             'your_secret_key',
             { expiresIn: '1h' }
         );
@@ -80,7 +80,7 @@ router.post('/login', async (req, res) => {
 
 // Felhasználói adatok lekérése
 router.get('/details', verifyUser, async (req, res) => {
-    console.log('Token dekódolt tartalma:', req.user); // Token tartalmának ellenőrzése
+    console.log('Token dekódolt tartalma:', req.user);
     try {
         const user = await User.findById(req.user.id).select('-password');
         if (!user) {
@@ -88,10 +88,10 @@ router.get('/details', verifyUser, async (req, res) => {
             return res.status(404).json({ message: 'Felhasználó nem található.' });
         }
 
-        console.log('Visszaküldött felhasználói adatok:', user); // Válasz tartalma
+        console.log('Visszaküldött felhasználói adatok:', user);
         res.status(200).json(user);
     } catch (error) {
-        console.error('Hiba történt a /details végpontnál:', error); // Hiba logolása
+        console.error('Hiba történt a /details végpontnál:', error);
         res.status(500).json({ message: 'Hiba történt.' });
     }
 });
@@ -170,8 +170,7 @@ router.put('/change-password', verifyUser, async (req, res) => {
 // Aktuális felhasználói adatok lekérdezése
 router.get('/me', verifyUser, async (req, res) => {
     try {
-        // Felhasználó keresése az ID alapján
-        const user = await User.findById(req.user.id).select('-password'); // Jelszót ne adjuk vissza
+        const user = await User.findById(req.user.id).select('-password');
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található' });
         }

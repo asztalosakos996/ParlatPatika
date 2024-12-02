@@ -1,0 +1,68 @@
+.age-verification-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Átlátszó fekete háttér */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.age-verification-modal-content {
+    background: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+.age-verification-modal h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+}
+
+.age-verification-modal p {
+    margin-bottom: 25px;
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.age-verification-modal button {
+    margin: 10px;
+    padding: 10px 30px;
+    font-size: 16px;
+    border: 2px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.age-verification-modal .confirm {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+.age-verification-modal .confirm:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.age-verification-modal .deny {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.age-verification-modal .deny:hover {
+    background-color: #dc3545;
+    color: white;
+}

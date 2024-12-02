@@ -2,20 +2,21 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { Link as ScrollLink } from 'react-scroll';
 import './Navbar.css';
-import Modal from './Modal'; // A saját modális komponensed
+import Modal from './Modal';
 
 const Navbar = () => {
     const { currentUser, login, logout } = useContext(AuthContext);
     const { cart } = useCart();
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]); // Keresési eredmények
+    const [searchResults, setSearchResults] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showRegisterModal, setShowRegisterModal] = useState(false);
-    const [showSearchModal, setShowSearchModal] = useState(false); // Keresési modális
+    const [showSearchModal, setShowSearchModal] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -186,10 +187,44 @@ const Navbar = () => {
                 ref={hamburgerMenuRef}
             >
                 <ul>
-                    <li><Link to="#categories" onClick={toggleHamburgerMenu}>Kategóriák</Link></li>
-                    <li><Link to="#popular-products" onClick={toggleHamburgerMenu}>Népszerű termékek</Link></li>
-                    <li><Link to="#blog" onClick={toggleHamburgerMenu}>Blog</Link></li>
-                    <li><Link to="#contact" onClick={toggleHamburgerMenu}>Kapcsolat</Link></li>
+                    <li>
+                    <ScrollLink
+                        to="categories"
+                        smooth={true}
+                        duration={500}
+                        onClick={toggleHamburgerMenu}
+                    >
+                        Kategóriák
+                    </ScrollLink>
+                    </li>
+                    <li>
+                    <ScrollLink
+                        to="popular-products"
+                        smooth={true}
+                        duration={500}
+                        onClick={toggleHamburgerMenu}
+                    >
+                        Népszerű termékek
+                    </ScrollLink>
+                    </li>
+                    <li>
+                    <ScrollLink
+                        to="blog"
+                        smooth={true}
+                        duration={500}
+                        onClick={toggleHamburgerMenu}
+                    >
+                        Blog
+                    </ScrollLink>
+                    </li>
+                    <li><ScrollLink
+                        to="contact"
+                        smooth={true}
+                        duration={500}
+                        onClick={toggleHamburgerMenu}
+                    >
+                        Kapcsolat
+                    </ScrollLink></li>
                     <li>
                         {/* Keresőmező (mobil) */}
                         <form onSubmit={handleSearchSubmit}>
@@ -211,10 +246,26 @@ const Navbar = () => {
 
             {/* Navigációs linkek */}
             <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-                <li><Link to="#categories">Kategóriák</Link></li>
-                <li><Link to="#popular-products">Népszerű termékek</Link></li>
-                <li><Link to="#blog">Blog</Link></li>
-                <li><Link to="#contact">Kapcsolat</Link></li>
+            <li>
+                    <ScrollLink to="categories" smooth={true} duration={500}>
+                    Kategóriák
+                    </ScrollLink>
+                </li>
+                <li>
+                    <ScrollLink to="popular-products" smooth={true} duration={500}>
+                    Népszerű termékek
+                    </ScrollLink>
+                </li>
+                <li>
+                    <ScrollLink to="blog" smooth={true} duration={500}>
+                    Blog
+                    </ScrollLink>
+                </li>
+                <li>
+                    <ScrollLink to="contact" smooth={true} duration={500}>
+                    Kapcsolat
+                    </ScrollLink>
+                </li>
                 <li>
                     {/* Keresőmező (desktop) */}
                     <form onSubmit={handleSearchSubmit}>
@@ -300,8 +351,8 @@ const Navbar = () => {
                 cursor: 'pointer' 
             }}
             onClick={() => {
-                handleLoginClose(); // Zárja be a bejelentkezési modális ablakot
-                navigate('/register'); // Navigál a regisztrációs oldalra
+                handleLoginClose();
+                navigate('/register');
             }}
         >
             Regisztrálj most!

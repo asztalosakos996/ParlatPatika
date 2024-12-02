@@ -1,5 +1,6 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
+const { sendContactMessage } = require('../services/emailService');
 require('dotenv').config();
 
 const router = express.Router();
@@ -50,6 +51,18 @@ router.post('/subscribe', async (req, res) => {
     } catch (error) {
         console.error('Hiba az email küldésekor:', error.message);
         res.status(500).json({ message: 'Hiba történt az email küldésekor.' });
+    }
+});
+
+router.post('/contact', async (req, res) => {
+    const formData = req.body;
+
+    try {
+        await sendContactMessage(formData);
+        res.status(200).json({ message: 'Üzenetedet sikeresen megkaptuk és megpróbálunk minél hamarabb válaszolni neked!' });
+    } catch (error) {
+        console.error('Hiba az üzenet feldolgozásakor:', error);
+        res.status(500).json({ message: 'Nem sikerült elküldeni az üzenetet.' });
     }
 });
 

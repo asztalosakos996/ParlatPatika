@@ -93,10 +93,13 @@ const ProductPage = () => {
                     <p>{product.description}</p>
                     <div className="product-info">
                         <p>
-                            <strong>Alkoholtartalom:</strong> {product.alcoholContent}
+                            <strong>Alkoholtartalom:</strong> {product.alcoholContent}%
                         </p>
                         <p>
                             <strong>Űrtartalom:</strong> {product.bottleSize}
+                        </p>
+                        <p>
+                            <strong>Származási hely:</strong> {product.origin}
                         </p>
                     </div>
                     <div className="product-price">

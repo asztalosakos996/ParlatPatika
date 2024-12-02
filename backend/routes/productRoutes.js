@@ -3,7 +3,7 @@ const multer = require('multer');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const mongoose = require('mongoose');
-const { generateProductDescription } = require('../services/openaiService'); // Új: AI szolgáltatás importálása
+const { generateProductDescription } = require('../services/openaiService');
 
 const router = express.Router();
 const fs = require('fs');
@@ -24,12 +24,11 @@ const upload = multer({ storage: storage });
 
 // Új termék létrehozása
 router.post('/', upload.single('image'), async (req, res) => {
-    // Console.log a kérés adatainak naplózásához
     console.log('Request body:', req.body);
     console.log('Request file:', req.file);
 
     const { name, description, price, alcoholContent, type, origin, bottleSize, category } = req.body;
-    console.log('Category ID received:', category); // Külön naplózás a category ID-hoz
+    console.log('Category ID received:', category);
 
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
 
@@ -162,8 +161,8 @@ router.get('/:id', async (req, res) => {
         const product = await Product.findById(req.params.id)
             .populate('category', 'name')
             .populate({
-                path: 'ratings', // Feltételezve, hogy a termék modellben van egy `ratings` mező, ami a kapcsolódó értékeléseket tartalmazza
-                populate: { path: 'user', select: 'username' } // Feltételezve, hogy az értékelés tartalmaz user ID-t
+                path: 'ratings',
+                populate: { path: 'user', select: 'username' }
             });
         if (!product) {
             return res.status(404).json({ message: 'Termék nem található' });

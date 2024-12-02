@@ -1,31 +1,31 @@
 .newsletter {
-    background-color: #333; /* háttérszín */
-    color: white; /* szöveg színe */
+    background-color: #333;
+    color: white;
     padding: 2rem;
     text-align: center;
 }
 
 .newsletter h2 {
-    margin-bottom: 1rem; /* alsó margó */
+    margin-bottom: 1rem;
 }
 
 .newsletter input[type="email"] {
     padding: 10px;
-    border: none; /* nincs keret */
-    border-radius: 5px; /* lekerekített sarkok */
-    margin-right: 10px; /* margó a gomb előtt */
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
 }
 
 .newsletter button {
-    background-color: white; /* gomb háttérszín */
-    color: #333; /* gomb szövegszín */
-    border: none; /* nincs keret */
-    padding: 10px 20px; /* gomb belső margó */
-    border-radius: 5px; /* lekerekített sarkok */
-    cursor: pointer; /* kéz ikon */
-    transition: background-color 0.3s; /* gomb animáció */
+    background-color: white;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .newsletter button:hover {
-    background-color: #f0f0f0; /* gomb hover állapot */
+    background-color: #f0f0f0;
 }

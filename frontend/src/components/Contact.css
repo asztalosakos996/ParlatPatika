@@ -1,0 +1,114 @@
+.contact-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 50px;
+    gap: 40px;
+    background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
+}
+
+.form-section {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #333333;
+}
+
+.form-section p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555555;
+}
+
+.form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-section input, .form-section textarea {
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    transition: border-color 0.3s ease;
+}
+
+.form-section input:focus, .form-section textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.form-section button {
+    padding: 15px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-section button:hover {
+    background-color: #0056b3;
+}
+
+.info-section {
+    flex: 1;
+    background-color: #333333;
+    color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-section h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #f9c300;
+}
+
+.info-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-section ul li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1rem;
+    color: white;
+}
+
+.info-section ul li i {
+    font-size: 1.2rem;
+    color: #f9c300;
+}
+
+/* Reszponzív stílus */
+@media (max-width: 768px) {
+    .contact-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-section, .info-section {
+        width: 100%;
+    }
+}

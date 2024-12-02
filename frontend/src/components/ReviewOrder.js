@@ -1,10 +1,11 @@
 import React from 'react';
-import { useCart } from '../context/CartContext'; // Kosár kezeléséhez szükséges hook
+import { useCart } from '../context/CartContext';
 import './ReviewOrder.css';
 
 const ReviewOrder = ({ onBack, orderData }) => {
     const { clearCart } = useCart(); // Kosár kiürítésének függvénye
 
+    
     const handleSubmit = async () => {
         console.log(orderData);
         try {
@@ -12,12 +13,13 @@ const ReviewOrder = ({ onBack, orderData }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}` // Token hozzáadása
                 },
                 body: JSON.stringify(orderData),
             });
-
+    
             const result = await response.json();
-
+    
             if (response.ok) {
                 alert('Rendelés sikeresen véglegesítve!');
                 clearCart(); // Kosár kiürítése a rendelés sikeres leadása után
@@ -28,6 +30,8 @@ const ReviewOrder = ({ onBack, orderData }) => {
             alert(`Hiba történt: ${error.message}`);
         }
     };
+    
+    
 
     return (
         <div className="review-order-container">
@@ -40,7 +44,7 @@ const ReviewOrder = ({ onBack, orderData }) => {
                 <p><strong>Telefonszám:</strong> {orderData.contactInfo?.phone || 'Nincs megadva'}</p>
                 
                 <h3>Szállítási és fizetési mód:</h3>
-                <p><strong>Szállítási mód:</strong> {orderData.shippingMethod?.method || 'Nincs kiválasztva'}</p>
+                <p><strong>Szállítási mód:</strong> {orderData.shippingMethod?.method || 'Nincs kiválasztva'} - {orderData.shippingCost?.toLocaleString()} Ft</p>
                 {orderData.shippingMethod.deliveryDetails && (
                     <>
                         <p><strong>Szállítási név:</strong> {orderData.shippingMethod.deliveryDetails.name}</p>
@@ -50,7 +54,7 @@ const ReviewOrder = ({ onBack, orderData }) => {
                 {orderData.shippingMethod.lockerLocation && (
                     <p><strong>Csomagpont:</strong> {orderData.shippingMethod.lockerLocation}</p>
                 )}
-                <p><strong>Fizetési mód:</strong> {orderData.paymentMethod || 'Nincs kiválasztva'}</p>
+                <p><strong>Fizetési mód:</strong> {orderData.paymentMethod?.method || 'Nincs kiválasztva'} - {orderData.paymentCost?.toLocaleString()} Ft</p>
 
                 <h3>Termékek:</h3>
                 <ul>

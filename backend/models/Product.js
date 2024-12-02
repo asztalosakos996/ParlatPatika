@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Termék séma
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -18,19 +17,19 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    alcoholContent: {  // Alkohol tartalom
+    alcoholContent: {
         type: Number,
         required: true,
     },
-    type: {  // Ital típusa
+    type: {
         type: String,
         required: true,
     },
-    origin: {  // Származási hely
+    origin: {
         type: String,
         required: true,
     },
-    bottleSize: {  // Palack méret
+    bottleSize: {
         type: String,
         required: true,
     },

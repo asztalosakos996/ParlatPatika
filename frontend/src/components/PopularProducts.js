@@ -9,7 +9,7 @@ const PopularProducts = () => {
     const startX = useRef(0);
     const currentTranslate = useRef(0);
     const prevTranslate = useRef(0);
-    const productWidth = 300; // Egy termék szélessége
+    const productWidth = 300;
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -17,11 +17,11 @@ const PopularProducts = () => {
                 const response = await fetch('http://localhost:5000/api/products');
                 const data = await response.json();
 
-                // Véletlenszerűen kiválaszt 10 terméket
+                
                 const shuffledProducts = data.sort(() => 0.5 - Math.random());
                 const selectedProducts = shuffledProducts.slice(0, 10);
 
-                // Duplikáljuk a termékeket a végtelen görgetés érdekében
+                
                 setProducts([...selectedProducts, ...selectedProducts]);
             } catch (error) {
                 console.error('Hiba a termékek lekérésekor:', error);
@@ -68,12 +68,12 @@ const PopularProducts = () => {
     };
 
     const handleTransitionEnd = () => {
-        const productCount = products.length / 2; // Eredeti termékek száma
+        const productCount = products.length / 2;
 
         // Ha túlmentünk az utolsó terméken (duplikált tartalom vége)
         if (currentTranslate.current <= -productWidth * productCount) {
             currentTranslate.current = 0; // Vissza az elejére
-            trackRef.current.style.transition = 'none'; // Kikapcsoljuk az animációt
+            trackRef.current.style.transition = 'none';
             trackRef.current.style.transform = `translateX(${currentTranslate.current}px)`;
             prevTranslate.current = currentTranslate.current;
         }

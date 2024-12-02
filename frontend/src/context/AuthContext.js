@@ -37,8 +37,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         setCurrentUser(null);
-        // Alternatív navigáció:
-        window.location.href = '/'; // Dobja a felhasználót a főoldalra kijelentkezéskor
+        window.location.href = '/';
     };
 
     return (

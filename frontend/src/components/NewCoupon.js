@@ -4,7 +4,7 @@ import './NewCoupon.css';
 const NewCoupon = () => {
     const [code, setCode] = useState('');
     const [discount, setDiscount] = useState(0);
-    const [discountType, setDiscountType] = useState('fixed'); // Alapértelmezett érték
+    const [discountType, setDiscountType] = useState('fixed');
     const [expirationDate, setExpirationDate] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');

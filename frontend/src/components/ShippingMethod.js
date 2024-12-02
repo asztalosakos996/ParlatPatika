@@ -12,7 +12,7 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
     const [lockerLocation, setLockerLocation] = useState('');
     const [isLoadingLockers, setIsLoadingLockers] = useState(false);
     const [availableLockers, setAvailableLockers] = useState([]);
-    const [useBillingData, setUseBillingData] = useState(false); // Jelölőnégyzet állapota
+    const [useBillingData, setUseBillingData] = useState(false);
 
     const handleChange = (e) => {
         setMethod(e.target.value);
@@ -48,8 +48,10 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
         setUseBillingData(isChecked);
 
         if (isChecked) {
+            // Ha a jelölőnégyzet be van pipálva, a számlázási adatokat másolja
             setDeliveryDetails(billingData);
         } else {
+            // Ha a jelölőnégyzet ki van pipálva, a szállítási adatokat üríti
             setDeliveryDetails({
                 name: '',
                 address: '',
@@ -61,10 +63,10 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (method === 'futarszolgalat') {
-            onNext({ shippingMethod: method, deliveryDetails });
-        } else if (method === 'csomagpont') {
-            onNext({ shippingMethod: method, lockerLocation });
+        if (method === 'Futárszolgálat') {
+            onNext({ method, deliveryDetails });
+        } else if (method === 'Csomagpont') {
+            onNext({ method, lockerLocation });
         } else {
             onNext(method);
         }
@@ -76,35 +78,38 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
             <label>
                 <input
                     type="radio"
-                    value="futarszolgalat"
-                    checked={method === 'futarszolgalat'}
+                    value="Futárszolgálat"
+                    checked={method === 'Futárszolgálat'}
                     onChange={handleChange}
                 />
-                Futárszolgálat (+1490 Ft)
+                Futárszolgálat
             </label>
             <label>
                 <input
                     type="radio"
-                    value="csomagpont"
-                    checked={method === 'csomagpont'}
+                    value="Csomagpont"
+                    checked={method === 'Csomagpont'}
                     onChange={(e) => {
                         handleChange(e);
                         if (!availableLockers.length) fetchLockers();
                     }}
                 />
-                Csomagpont (+990 Ft)
+                Csomagpont
             </label>
 
-            {method === 'futarszolgalat' && (
+            {/* Futárszolgálat adatok */}
+            {method === 'Futárszolgálat' && (
                 <div className="delivery-form">
                     <h3>Szállítási adatok</h3>
+                    <br/>
+                    <h3>Megegyezik a számlázási adatokkal</h3>
                     <label>
                         <input
                             type="checkbox"
                             checked={useBillingData}
                             onChange={handleUseBillingDataChange}
                         />
-                        Megegyezik a számlázási adatokkal
+                        
                     </label>
                     <label>
                         Név:
@@ -153,7 +158,8 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
                 </div>
             )}
 
-            {method === 'csomagpont' && (
+            {/* Csomagautomata kiválasztó */}
+            {method === 'Csomagpont' && (
                 <div className="locker-form">
                     <h3>Válassz egy csomagautomatát</h3>
                     {isLoadingLockers ? (

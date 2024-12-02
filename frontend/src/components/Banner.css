@@ -14,7 +14,7 @@
 }
 
 .banner-content {
-    background-color: rgba(0, 0, 0, 0.5); /* Sötét overlay a szöveg jobb olvashatóságához */
+    background-color: rgba(0, 0, 0, 0.5);
     padding: 20px;
     border-radius: 10px;
 }
@@ -22,6 +22,7 @@
 .banner h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
+    color: white;
 }
 
 .banner p {

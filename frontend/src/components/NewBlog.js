@@ -7,10 +7,10 @@ const NewBlog = () => {
     const [content, setContent] = useState('');
     const [image, setImage] = useState(null);
     const [error, setError] = useState('');
-    const [isGenerating, setIsGenerating] = useState(false); // Az AI tartalom generálás állapota
+    const [isGenerating, setIsGenerating] = useState(false);
     const navigate = useNavigate();
 
-    // Blog poszt beküldése
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -28,7 +28,7 @@ const NewBlog = () => {
             });
 
             if (response.ok) {
-                navigate('/admin/manage-blogs'); // Blogok kezelése oldalra irányít
+                navigate('/admin/manage-blogs');
             } else {
                 const data = await response.json();
                 setError(data.message || 'Hiba történt a blog létrehozásakor.');

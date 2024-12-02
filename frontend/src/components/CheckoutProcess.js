@@ -8,38 +8,32 @@ import ReviewOrder from './ReviewOrder';
 import './CheckoutProcess.css';
 
 const CheckoutProcess = () => {
-    const { currentUser } = useContext(AuthContext); // Hozzáférés az aktuális felhasználóhoz
+    const { currentUser } = useContext(AuthContext);
     const { cart, totalAmount } = useCart();
 
-    // Szállítási és fizetési költségek
-    const shippingCosts = {
-        futarszolgalat: 1490,
-        csomagpont: 990,
-    };
-
-    const paymentCosts = {
-        bankkártya: 0,
-        utánvét: 490,
-    };
-
-    const [step, setStep] = useState(1); // Lépés állapot
-    const [loadingUserData, setLoadingUserData] = useState(false); // Felhasználói adatok betöltése állapot
+    const [step, setStep] = useState(1);
+    const [loadingUserData, setLoadingUserData] = useState(false);
     const [orderData, setOrderData] = useState({
-        userId: currentUser ? currentUser._id : null,
-        contactInfo: {},
+        user: currentUser ? currentUser._id : null,
+        contactInfo: {
+            email: '',
+            name: '',
+            address: '',
+            city: '',
+            postalCode: '',
+            phone: '',
+        },
         shippingMethod: '',
         paymentMethod: '',
-        shippingCost: 0,
-        paymentCost: 0,
         items: cart.map((item) => ({
             product: item._id,
             quantity: item.quantity,
             price: item.price,
         })),
-        totalAmount: totalAmount,
+        totalAmount: 0,
     });
 
-    // Felhasználói adatok betöltése
+    // Felhasználói adatok betöltése, ha a felhasználó be van jelentkezve
     useEffect(() => {
         const fetchUserData = async () => {
             if (!currentUser) return;
@@ -55,20 +49,22 @@ const CheckoutProcess = () => {
 
                 if (response.ok) {
                     const userData = await response.json();
-                    setOrderData((prev) => ({
-                        ...prev,
+                    setOrderData((prevData) => ({
+                        ...prevData,
                         contactInfo: {
                             email: userData.email || '',
                             name: userData.name || '',
-                            phone: userData.phone || '',
                             address: userData.address?.street || '',
                             city: userData.address?.city || '',
                             postalCode: userData.address?.postalCode || '',
+                            phone: userData.phone || '',
                         },
                     }));
+                } else {
+                    console.error('Felhasználói adatok betöltése sikertelen.');
                 }
             } catch (error) {
-                console.error('Hiba a felhasználói adatok betöltésekor:', error);
+                console.error('Hiba történt a felhasználói adatok betöltésekor:', error);
             } finally {
                 setLoadingUserData(false);
             }
@@ -91,18 +87,13 @@ const CheckoutProcess = () => {
             })
         );
 
-        const shippingCost = shippingCosts[newData.shippingMethod] || 0;
-        const paymentCost = paymentCosts[newData.paymentMethod] || 0;
-
         setOrderData((prevData) => ({
             ...prevData,
             ...newData,
+            user: currentUser ? currentUser._id : null,
             items: updatedItems,
-            shippingCost,
-            paymentCost,
-            totalAmount: totalAmount + shippingCost + paymentCost,
+            totalAmount: totalAmount,
         }));
-
         setStep((prevStep) => prevStep + 1);
     };
 

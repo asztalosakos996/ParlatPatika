@@ -1,19 +1,19 @@
 .footer {
-    background-color: #333; /* háttérszín */
-    color: white; /* szöveg színe */
+    background-color: #333;
+    color: white;
     padding: 2rem;
-    text-align: center; /* középre igazítás */
+    text-align: center;
 }
 
 .footer p {
-    margin: 10px 0; /* margó */
+    margin: 10px 0;
 }
 
 .footer a {
-    color: white; /* link színe */
-    text-decoration: none; /* aláhúzás eltávolítása */
+    color: white;
+    text-decoration: none;
 }
 
 .footer a:hover {
-    text-decoration: underline; /* aláhúzás hover állapotban */
+    text-decoration: underline;
 }

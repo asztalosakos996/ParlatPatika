@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './orderSuccess.css'; // Stílusok opcionálisan
+import './orderSuccess.css';
 
 const OrderSuccess = () => {
     const navigate = useNavigate(); // Navigációs hook

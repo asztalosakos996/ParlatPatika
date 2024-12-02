@@ -17,7 +17,7 @@ const ratingSchema = new mongoose.Schema({
         trim: true
     },
     rating: {
-        type: Number, // Értékelés 1-5 közötti skálán
+        type: Number,
         required: true,
         min: 1,
         max: 5

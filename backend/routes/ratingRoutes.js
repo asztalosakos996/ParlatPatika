@@ -5,7 +5,6 @@ const Product = require('../models/Product');
 const { verifyUser } = require('../middleware/authMiddleware');
 
 // Új értékelés mentése
-// Új értékelés mentése
 router.post('/:productId/reviews/add', verifyUser, async (req, res) => {
     try {
         const { productId } = req.params;
@@ -24,7 +23,6 @@ router.post('/:productId/reviews/add', verifyUser, async (req, res) => {
 
         const savedRating = await newRating.save();
 
-        // Hozzáadjuk az értékelést a termékhez
         await Product.findByIdAndUpdate(productId, { $push: { ratings: savedRating._id } });
 
         res.status(201).json(savedRating);
@@ -39,13 +37,12 @@ router.get('/:productId/reviews', async (req, res) => {
     try {
         const { productId } = req.params;
 
-        // Ellenőrizzük, hogy a termék létezik-e
+    
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ message: 'A termék nem található.' });
         }
 
-        // Az értékelések lekérdezése az adatbázisból
         const reviews = await Rating.find({ product: productId }).populate('user', 'username');
         res.status(200).json(reviews);
     } catch (error) {

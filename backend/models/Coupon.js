@@ -8,17 +8,17 @@ const couponSchema = new mongoose.Schema({
         trim: true
     },
     discount: {
-        type: Number, // A kedvezmény százalékban vagy fix összegben
+        type: Number,
         required: true,
         min: 0
     },
     discountType: {
         type: String,
-        enum: ['fixed', 'percentage'], // Meghatározza a kedvezmény típusát
+        enum: ['fixed', 'percentage'],
         required: true
     },
     expirationDate: {
-        type: Date, // Kupon lejárati dátuma
+        type: Date,
         required: true
     },
     isActive: {
@@ -26,12 +26,12 @@ const couponSchema = new mongoose.Schema({
         default: true
     },
     usageLimit: {
-        type: Number, // A kupon maximális felhasználási száma
-        default: null // Ha nincs limit, lehet null
+        type: Number,
+        default: null
     },
     timesUsed: {
         type: Number,
-        default: 0 // Kezdetben nulla
+        default: 0
     }
 }, { timestamps: true });
 

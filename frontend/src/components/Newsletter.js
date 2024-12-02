@@ -3,7 +3,7 @@ import './Newsletter.css';
 
 const Newsletter = () => {
     const [email, setEmail] = useState('');
-    const [firstName, setFirstName] = useState(''); // Új állapot a keresztnév tárolására
+    const [firstName, setFirstName] = useState('');
     const [message, setMessage] = useState('');
 
     const handleSubscribe = async () => {
@@ -13,7 +13,7 @@ const Newsletter = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, firstName }) // Keresztnév is elküldve a backendnek
+                body: JSON.stringify({ email, firstName })
             });
             const data = await response.json();
             if (response.ok) {
@@ -34,13 +34,13 @@ const Newsletter = () => {
                 type="text"
                 placeholder="Keresztnév"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)} // Keresztnév állapot frissítése
+                onChange={(e) => setFirstName(e.target.value)}
             />
             <input
                 type="email"
                 placeholder="Email cím"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)} // Email állapot frissítése
+                onChange={(e) => setEmail(e.target.value)}
             />
             <button onClick={handleSubscribe}>Feliratkozás</button>
             {message && <p>{message}</p>}

@@ -4,10 +4,10 @@
 }
 
 .categories-grid {
-    display: flex; /* Flexbox használata */
-    flex-wrap: wrap; /* Csempék új sorba kerülnek, ha nincs elég hely */
-    justify-content: center; /* Középre igazítás */
-    gap: 1rem; /* Csempék közötti távolság */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
 }
 
 .category-card {
@@ -16,7 +16,7 @@
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.2s;
-    width: 200px; /* Állítsd be a csempe szélességét */
+    width: 200px;
     text-decoration: none;
     color: black;
 }

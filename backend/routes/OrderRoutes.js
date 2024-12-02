@@ -2,25 +2,29 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const { sendOrderConfirmation } = require('../services/emailService');
+const { verifyUser } = require('../middleware/authMiddleware');
+console.log('verifyUser:', verifyUser);
 
 const router = express.Router();
 
 // Új rendelés létrehozása
-router.post('/', async (req, res) => {
+router.post('/', verifyUser, async (req, res) => {
     console.log('Received order data:', req.body);
+    console.log('Felhasználó azonosítója a rendelésnél:', req.user?.id);
 
-    const { userId, contactInfo, shippingMethod, paymentMethod, items, totalAmount } = req.body;
+    const { contactInfo, shippingMethod, paymentMethod, items, totalAmount } = req.body;
 
     try {
+        // Ha van hitelesített felhasználó, a rendelés a felhasználóhoz kerül
         const newOrder = new Order({
-            user: userId || null,
+            user: req.user ? mongoose.Types.ObjectId.createFromHexString(req.user.id) : null,
             contactInfo,
             shippingMethod,
             paymentMethod,
             items,
             totalAmount,
         });
-
+        console.log('Rendelés mentésre kész objektum:', newOrder);
         const savedOrder = await newOrder.save();
 
         // Rendelési visszaigazolás e-mail küldése
@@ -47,7 +51,7 @@ router.post('/', async (req, res) => {
 // Rendelések listázása
 router.get('/', async (req, res) => {
     try {
-        const orders = await Order.find().populate('user', 'email'); // Felhasználó adatokkal együtt
+        const orders = await Order.find().populate('user', 'email');
         res.status(200).json(orders);
     } catch (error) {
         console.error('Hiba a rendelések lekérésekor:', error);
@@ -57,13 +61,12 @@ router.get('/', async (req, res) => {
 
 router.get('/api/orders/stats', async (req, res) => {
     try {
-        const orders = await Order.find(); // Lekérdezed az összes rendelést
+        const orders = await Order.find();
         
-        // Rendelési statisztikák összegzése havi bontásban
         const monthlyStats = Array(12).fill(0);
         orders.forEach(order => {
-            const month = new Date(order.createdAt).getMonth(); // Hónap index 0-11
-            monthlyStats[month] += 1; // Rendelésszám növelése
+            const month = new Date(order.createdAt).getMonth();
+            monthlyStats[month] += 1;
         });
 
         res.json(monthlyStats);
@@ -71,6 +74,21 @@ router.get('/api/orders/stats', async (req, res) => {
         res.status(500).json({ message: 'Hiba történt a rendelési statisztikák lekérésekor.' });
     }
 });
+
+//Felhasználóhoz kötött rendelések listázása
+router.get('/my-orders', verifyUser, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const orders = await Order.find({ user: userId })
+            .populate('items.product', 'name price')
+            .sort({ createdAt: -1 });
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Hiba a rendelések lekérése során:', error.message);
+        res.status(500).json({ message: 'Hiba történt a rendelések lekérése során.' });
+    }
+});
+
 
 // Fizetési módok lekérése
 router.get('/payment-methods', async (req, res) => {

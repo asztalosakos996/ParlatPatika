@@ -1,4 +1,3 @@
-/* Alap stílusok (desktop) */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -11,8 +10,8 @@
 }
 
 .logo-image {
-    height: 60px; /* Állítsd be a kívánt magasságot */
-    width: auto; /* Automatikus szélesség a megfelelő arány megtartásához */
+    height: 60px;
+    width: auto;
 }
 
 .hamburger {
@@ -69,7 +68,6 @@
     color: #ddd;
 }
 
-/* Keresősáv */
 .search-bar {
     margin-left: auto;
     padding: 5px;
@@ -78,7 +76,6 @@
     outline: none;
 }
 
-/* Modális ablak stílusok */
 .modal {
     position: fixed;
     top: 50%;
@@ -97,7 +94,7 @@
 }
 
 .modal:hover {
-    outline: none; /* Desktop nézetben a hover nem zárja be a modált */
+    outline: none;
 }
 
 .modal form {
@@ -193,31 +190,30 @@
 }
 
 .cart-link {
-    text-decoration: none; /* Távolítsd el az aláhúzást */
-    color: inherit; /* Örökli a szülő színét */
-    display: flex; /* Ha a számlálóval egy vonalba akarod helyezni */
-    align-items: center; /* Függőlegesen középre igazítja a tartalmat */
-    gap: 5px; /* Ikon és számláló közötti távolság */
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* Kosár ikon hover effekt (opcionális) */
 .cart-link:hover {
-    color: #333; /* Példa: sötétszürke szín hover esetén */
+    color: #333;
 }
 
-/* Kosár ikon stílus */
+
 .cart-link i {
-    font-size: 1.5rem; /* Példa: nagyobb ikonméret */
+    font-size: 1.5rem;
 }
 
 /* Kosár számláló */
 .cart-link .cart-count {
-    background-color: #ff0000; /* Piros háttér */
-    color: #fff; /* Fehér szöveg */
-    font-size: 0.8rem; /* Szöveg mérete */
-    border-radius: 50%; /* Kör alakú megjelenés */
-    padding: 2px 6px; /* Számláló mérete */
-    margin-left: 5px; /* Távolság az ikontól */
+    background-color: #ff0000;
+    color: #fff;
+    font-size: 0.8rem;
+    border-radius: 50%;
+    padding: 2px 6px;
+    margin-left: 5px;
 }
 
 /* Mobil nézethez oldalról beúszás */
@@ -249,14 +245,14 @@
     .hamburger-menu {
         position: fixed;
         top: 0;
-        left: 500px; /* Alapértelmezett helyzet kívül a képernyőn */
+        left: 500px;
         height: 100%;
-        width: 250px; /* Szélesség */
-        background-color: #444; /* Háttérszín */
-        transition: right 0.3s ease; /* Simább animáció */
-        z-index: 10000; /* Magasabb rétegre helyezés */
-        overflow-y: auto; /* Ha sok elem lenne */
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Árnyék */
+        width: 250px;
+        background-color: #444;
+        transition: right 0.3s ease;
+        z-index: 10000;
+        overflow-y: auto;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
     }
 
     .hamburger-menu.open {

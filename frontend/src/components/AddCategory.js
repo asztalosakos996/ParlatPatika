@@ -3,7 +3,7 @@ import './AddCategory.css';
 
 const AddCategory = () => {
     const [name, setName] = useState('');
-    const [imageFile, setImageFile] = useState(null); // Állapot a fájl tárolására
+    const [imageFile, setImageFile] = useState(null);
     const [description, setDescription] = useState('');
     const [message, setMessage] = useState('');
 

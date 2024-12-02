@@ -42,4 +42,29 @@ const sendOrderConfirmation = async (email, orderDetails) => {
     }
 };
 
-module.exports = { sendOrderConfirmation };
+// Kapcsolati űrlap üzenet e-mail küldése
+const sendContactMessage = async (formData) => {
+    const mailOptions = {
+        from: `"Kapcsolati Üzenet" <${formData.email}>`,
+        to: process.env.EMAIL_USER, 
+        subject: `Kapcsolati üzenet: ${formData.subject}`,
+        html: `
+            <h1>Új üzenet a kapcsolati űrlapról</h1>
+            <p><strong>Név:</strong> ${formData.name}</p>
+            <p><strong>Email:</strong> ${formData.email}</p>
+            <p><strong>Téma:</strong> ${formData.subject}</p>
+            <p><strong>Üzenet:</strong></p>
+            <p>${formData.message}</p>
+        `,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Kapcsolati üzenet elküldve: ${formData.email}`);
+    } catch (error) {
+        console.error('Hiba az üzenet küldésekor:', error.message);
+        throw new Error('Nem sikerült elküldeni az üzenetet.');
+    }
+};
+
+module.exports = { sendOrderConfirmation, sendContactMessage };

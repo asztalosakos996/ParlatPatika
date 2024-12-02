@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Blog = require('../models/Blog'); // Blog modell
 const { generateBlogContent } = require('../services/openaiService');
@@ -30,8 +31,14 @@ router.get('/', async (req, res) => {
 
 // Egy blog lekérése ID alapján
 router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Érvénytelen blog ID.' });
+    }
+
     try {
-        const blog = await Blog.findById(req.params.id);
+        const blog = await Blog.findById(id);
         if (!blog) {
             return res.status(404).json({ message: 'Blog nem található.' });
         }

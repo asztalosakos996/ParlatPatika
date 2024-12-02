@@ -16,7 +16,7 @@ const blogSchema = new mongoose.Schema(
         },
     },
     {
-        timestamps: true, // createdAt, updatedAt mezők automatikusan generálva
+        timestamps: true,
     }
 );
 

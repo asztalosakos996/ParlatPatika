@@ -6,8 +6,8 @@
 }
 
 .dashboard-chart {
-    max-width: 800px; /* Nagyobb szélesség a grafikon számára */
-    margin: 20px auto; /* Középre igazítás és margin */
+    max-width: 800px;
+    margin: 20px auto;
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
@@ -39,13 +39,13 @@
     flex-wrap: wrap;
     gap: 20px;
     margin-bottom: 30px;
-    justify-content: center; /* Középre igazítás */
+    justify-content: center;
 }
 
 .function-card {
-    flex: 1 1 calc(33.33% - 20px); /* Három elem egy sorban, de rugalmas */
+    flex: 1 1 calc(33.33% - 20px);
     min-width: 200px;
-    max-width: 300px; /* Maximális szélesség a kártyákhoz */
+    max-width: 300px;
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -67,7 +67,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%; /* Kitölti a teljes kártyát */
+    height: 100%;
 }
 
 .function-card p {
@@ -97,18 +97,18 @@
     flex-wrap: wrap;
     gap: 20px;
     margin-top: 10px;
-    justify-content: flex-start; /* Balra igazítás */
+    justify-content: flex-start;
 }
 
 
 @media (max-width: 768px) {
     .function-card {
-        flex: 1 1 calc(50% - 20px); /* Két elem egy sorban kisebb kijelzőkön */
+        flex: 1 1 calc(50% - 20px);
     }
 }
 
 @media (max-width: 480px) {
     .function-card {
-        flex: 1 1 100%; /* Egy elem egy sorban a legkisebb kijelzőkön */
+        flex: 1 1 100%;
     }
 }

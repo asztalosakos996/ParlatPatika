@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import './EditProductPage.css';
 
 const EditProductPage = () => {
     const { productId } = useParams();
     const navigate = useNavigate();
+
     const [product, setProduct] = useState({
         name: '',
         description: '',
@@ -12,35 +14,32 @@ const EditProductPage = () => {
         type: '',
         origin: '',
         bottleSize: '',
-        category: ''
+        category: '',
     });
-    const [categories, setCategories] = useState([]); // Kategóriák állapota
+
+    const [categories, setCategories] = useState([]);
     const [image, setImage] = useState(null);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        // Termék betöltése
         const fetchProduct = async () => {
             try {
                 const response = await fetch(`http://localhost:5000/api/products/${productId}`);
-                if (!response.ok) {
-                    throw new Error('Nem sikerült betölteni a terméket.');
-                }
                 const data = await response.json();
                 setProduct(data);
             } catch (err) {
-                setError(err.message);
+                setError('Nem sikerült betölteni a terméket.');
             }
         };
 
-        // Kategóriák betöltése
         const fetchCategories = async () => {
             try {
                 const response = await fetch('http://localhost:5000/api/categories');
                 const data = await response.json();
                 setCategories(data);
             } catch (err) {
-                console.error('Nem sikerült betölteni a kategóriákat:', err);
+                setError('Nem sikerült betölteni a kategóriákat.');
             }
         };
 
@@ -50,10 +49,7 @@ const EditProductPage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProduct((prevProduct) => ({
-            ...prevProduct,
-            [name]: value,
-        }));
+        setProduct((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleImageChange = (e) => {
@@ -62,73 +58,123 @@ const EditProductPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const formData = new FormData();
-        for (const key in product) {
-            if (key === 'category' && typeof product[key] === 'object' && product[key]._id) {
-                // Csak az _id értéket küldi el, ha az objektum
+
+        Object.keys(product).forEach((key) => {
+            if (key === 'category' && typeof product[key] === 'object') {
                 formData.append(key, product[key]._id);
             } else {
                 formData.append(key, product[key]);
             }
-        }
+        });
+
         if (image) {
             formData.append('image', image);
         }
-    
+
         try {
             const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
                 method: 'PUT',
                 body: formData,
             });
+
             if (!response.ok) {
                 throw new Error('Nem sikerült frissíteni a terméket.');
             }
-            alert('Termék sikeresen frissítve.');
+
+            alert('Termék sikeresen frissítve!');
             navigate(`/product/${productId}`);
         } catch (err) {
-            setError(err.message);
+            setError('Hiba történt a frissítés során.');
+        } finally {
+            setLoading(false);
         }
     };
-    
 
     return (
-        <div>
-            <h1>Termék szerkesztése</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <label>
+        <div className="edit-product-container">
+            <h2 className="edit-product-title">Termék szerkesztése</h2>
+            {error && <p className="error-message">{error}</p>}
+            <form className="edit-product-form" onSubmit={handleSubmit}>
+                <label className="form-label">
                     Név:
-                    <input type="text" name="name" value={product.name} onChange={handleChange} required />
+                    <input
+                        className="form-input"
+                        type="text"
+                        name="name"
+                        value={product.name}
+                        onChange={handleChange}
+                        required
+                    />
                 </label>
-                <label>
+                <label className="form-label">
                     Leírás:
-                    <textarea name="description" value={product.description} onChange={handleChange} required />
+                    <textarea
+                        className="form-textarea"
+                        name="description"
+                        value={product.description}
+                        onChange={handleChange}
+                        required
+                    />
                 </label>
-                <label>
+                <label className="form-label">
                     Ár:
-                    <input type="number" name="price" value={product.price} onChange={handleChange} required />
+                    <input
+                        className="form-input"
+                        type="number"
+                        name="price"
+                        value={product.price}
+                        onChange={handleChange}
+                        required
+                    />
                 </label>
-                <label>
+                <label className="form-label">
                     Alkoholtartalom:
-                    <input type="number" name="alcoholContent" value={product.alcoholContent} onChange={handleChange} />
+                    <input
+                        className="form-input"
+                        type="number"
+                        name="alcoholContent"
+                        value={product.alcoholContent}
+                        onChange={handleChange}
+                    />
                 </label>
-                <label>
+                <label className="form-label">
                     Típus:
-                    <input type="text" name="type" value={product.type} onChange={handleChange} />
+                    <input
+                        className="form-input"
+                        type="text"
+                        name="type"
+                        value={product.type}
+                        onChange={handleChange}
+                    />
                 </label>
-                <label>
+                <label className="form-label">
                     Származási hely:
-                    <input type="text" name="origin" value={product.origin} onChange={handleChange} />
+                    <input
+                        className="form-input"
+                        type="text"
+                        name="origin"
+                        value={product.origin}
+                        onChange={handleChange}
+                    />
                 </label>
-                <label>
+                <label className="form-label">
                     Űrtartalom:
-                    <input type="text" name="bottleSize" value={product.bottleSize} onChange={handleChange} />
+                    <input
+                        className="form-input"
+                        type="text"
+                        name="bottleSize"
+                        value={product.bottleSize}
+                        onChange={handleChange}
+                    />
                 </label>
-                <label>
+                <label className="form-label">
                     Kategória:
                     <select
+                        className="form-select"
                         name="category"
-                        value={product.category._id || product.category} // Ha van `_id`, azt használja
+                        value={product.category}
                         onChange={handleChange}
                     >
                         {categories.map((cat) => (
@@ -138,11 +184,17 @@ const EditProductPage = () => {
                         ))}
                     </select>
                 </label>
-                <label>
-                    Kép:
-                    <input type="file" onChange={handleImageChange} />
+                <label className="form-label">
+                    Kép feltöltése:
+                    <input
+                        className="form-file-input"
+                        type="file"
+                        onChange={handleImageChange}
+                    />
                 </label>
-                <button type="submit">Mentés</button>
+                <button className="form-button" type="submit" disabled={loading}>
+                    {loading ? 'Mentés folyamatban...' : 'Mentés'}
+                </button>
             </form>
         </div>
     );
