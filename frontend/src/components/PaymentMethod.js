@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import './PaymentMethod.css';
 
 const PaymentMethod = ({ onNext, onBack, selectedMethod }) => {
+
+    const paymentPrices = {
+        'Bankkártya': 0,
+        'Utánvét': 490,
+    }
+
     const [method, setMethod] = useState(selectedMethod || '');
 
     const handleChange = (e) => {
@@ -10,19 +16,26 @@ const PaymentMethod = ({ onNext, onBack, selectedMethod }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onNext(method);
+        const paymentPrice = paymentPrices[method]; // Fizetési ár meghatározása
+    
+        onNext({
+            method,
+            price: paymentPrice,
+        });
     };
+    
+    
 
     return (
         <form onSubmit={handleSubmit} className="payment-method-container">
             <h2>Fizetési mód kiválasztása</h2>
             <label>
                 <input type="radio" value="Bankkártya" checked={method === 'Bankkártya'} onChange={handleChange} />
-                Bankkártya
+                Bankkártya - ingyenes
             </label>
             <label>
                 <input type="radio" value="Utánvét" checked={method === 'Utánvét'} onChange={handleChange} />
-                Utánvét
+                Utánvét - {paymentPrices['Utánvét']} Ft
             </label>
             <div className="payment-buttons">
                 <button type="button" className="back-button" onClick={onBack}>Vissza</button>

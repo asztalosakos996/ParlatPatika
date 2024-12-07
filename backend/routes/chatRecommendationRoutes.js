@@ -3,11 +3,12 @@ const { generateProductRecommendation } = require('../services/openaiService'); 
 const router = express.Router();
 
 router.post('/recommendation', async (req, res) => {
-    const { category } = req.body;
+    const { input } = req.body; // req.body-ból kinyerjük az adatokat
+    console.log("Kapott adatok:", { input });
 
     try {
-        // Meghívja a termékajánló függvényt a megadott kategóriával
-        const recommendation = await generateProductRecommendation(category);
+        // Továbbítjuk az adatokat objektumként
+        const recommendation = await generateProductRecommendation(input);
 
         // Válasz a frontendnek a generált ajánlással
         res.json({ message: recommendation });
@@ -16,5 +17,6 @@ router.post('/recommendation', async (req, res) => {
         res.status(500).json({ message: 'Hiba történt a termék ajánlása során.' });
     }
 });
+
 
 module.exports = router;

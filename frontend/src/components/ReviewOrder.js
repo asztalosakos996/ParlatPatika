@@ -44,7 +44,7 @@ const ReviewOrder = ({ onBack, orderData }) => {
                 <p><strong>Telefonszám:</strong> {orderData.contactInfo?.phone || 'Nincs megadva'}</p>
                 
                 <h3>Szállítási és fizetési mód:</h3>
-                <p><strong>Szállítási mód:</strong> {orderData.shippingMethod?.method || 'Nincs kiválasztva'} - {orderData.shippingCost?.toLocaleString()} Ft</p>
+                <strong>Szállítási mód:</strong> {orderData.shippingMethod?.method || 'Nincs kiválasztva'} - {orderData.shippingMethod?.price?.toLocaleString()} Ft
                 {orderData.shippingMethod.deliveryDetails && (
                     <>
                         <p><strong>Szállítási név:</strong> {orderData.shippingMethod.deliveryDetails.name}</p>
@@ -54,7 +54,7 @@ const ReviewOrder = ({ onBack, orderData }) => {
                 {orderData.shippingMethod.lockerLocation && (
                     <p><strong>Csomagpont:</strong> {orderData.shippingMethod.lockerLocation}</p>
                 )}
-                <p><strong>Fizetési mód:</strong> {orderData.paymentMethod?.method || 'Nincs kiválasztva'} - {orderData.paymentCost?.toLocaleString()} Ft</p>
+                <strong>Fizetési mód:</strong> {orderData.paymentMethod?.method || 'Nincs kiválasztva'} - {(orderData.paymentMethod?.price || 0).toLocaleString()} Ft
 
                 <h3>Termékek:</h3>
                 <ul>
@@ -66,7 +66,7 @@ const ReviewOrder = ({ onBack, orderData }) => {
                 </ul>
 
                 <h3>Végösszeg:</h3>
-                <p><strong>{orderData.totalAmount?.toLocaleString() || '0'} Ft</strong></p>
+                <p><strong>{((orderData.totalAmount || 0) + (orderData.shippingMethod?.price || 0) + (orderData.paymentMethod?.price || 0)).toLocaleString()} Ft</strong></p>
             </div>
             
             <div className="review-buttons">

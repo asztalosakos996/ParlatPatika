@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
 
         // JWT token generálás a isAdmin mezővel együtt
         const token = jwt.sign(
-            { id: user._id, isAdmin: user.isAdmin, email: user.email },
+            { id: user._id, isAdmin: user.isAdmin, email: user.email, name: user.name },
             'your_secret_key',
             { expiresIn: '1h' }
         );

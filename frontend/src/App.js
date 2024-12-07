@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -31,7 +31,12 @@ import ManageBlog from './components/ManageBlog';
 import EditBlog from './components/EditBlog';
 import UserDetails from './components/UserDetails';
 import './App.css';
+import BlogPostPage from './components/BlogPostPage';
+import MyOrders from './components/MyOrders';
+import AgeVerificationModal from './components/AgeVerificationModal';
 
+
+const Contact = React.lazy(() => import('./components/Contact'));
 
 function App() {
   return (
@@ -39,16 +44,28 @@ function App() {
       <CartProvider>
         <Router>
           <div className="app-container">
+            <AgeVerificationModal />
             <Navbar />
             <div className="routes-container">
               <Routes>
                 <Route path="/" element={
                   <>
                     <Banner />
-                    <Categories />
-                    <PopularProducts />
+                    <div id="categories">
+                      <Categories />
+                    </div>
+                    <div id="popular-products">
+                      <PopularProducts />
+                    </div>
                     <Newsletter />
-                    <BlogPosts />
+                    <div id="blog">
+                      <BlogPosts />
+                    </div>
+                    <Suspense fallback={<div>Kapcsolat betöltése...</div>}>
+                        <div id="contact">
+                          <Contact />
+                        </div>
+                      </Suspense>
                   </>
                 } />
                 <Route path="/category/:categoryName" element={<CategoryPage />} />
@@ -70,7 +87,9 @@ function App() {
                 <Route path="/admin/new-blog" element={<NewBlog />} />
                 <Route path="/admin/manage-blogs" element={<ManageBlog />} />
                 <Route path="/admin/edit-blog/:id" element={<EditBlog />} />
+                <Route path="/blogs/:id" element={<BlogPostPage />} />
                 <Route path="/details" element={<UserDetails />} />
+                <Route path="/orders" element={<MyOrders />} />
               
 
 

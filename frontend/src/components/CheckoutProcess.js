@@ -74,6 +74,7 @@ const CheckoutProcess = () => {
     }, [currentUser]);
 
     const handleNextStep = async (newData) => {
+        console.log('Új adatok:', newData);
         const updatedItems = await Promise.all(
             cart.map(async (item) => {
                 const response = await fetch(`http://localhost:5000/api/products/${item._id}`);
@@ -94,6 +95,7 @@ const CheckoutProcess = () => {
             items: updatedItems,
             totalAmount: totalAmount,
         }));
+        console.log('Frissített rendelési adatok:', orderData);
         setStep((prevStep) => prevStep + 1);
     };
 

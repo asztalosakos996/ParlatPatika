@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './ShippingMethod.css';
 
 const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
+
+    const shippingPrices = {
+        'Futárszolgálat': 1490,
+        'Csomagautomata': 990,
+    }
+
     const [method, setMethod] = useState(selectedMethod || '');
     const [deliveryDetails, setDeliveryDetails] = useState({
         name: '',
@@ -13,6 +19,20 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
     const [isLoadingLockers, setIsLoadingLockers] = useState(false);
     const [availableLockers, setAvailableLockers] = useState([]);
     const [useBillingData, setUseBillingData] = useState(false);
+
+    useEffect(() => {
+        if (selectedMethod) {
+            setMethod(selectedMethod.method || '');
+            setDeliveryDetails(selectedMethod.deliveryDetails || {
+                name: '',
+                address: '',
+                city: '',
+                postalCode: '',
+            });
+            setLockerLocation(selectedMethod.lockerLocation || '');
+            setUseBillingData(selectedMethod.useBillingData || false); // Checkbox állapot inicializálása
+        }
+    }, [selectedMethod]);
 
     const handleChange = (e) => {
         setMethod(e.target.value);
@@ -63,14 +83,29 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+    
+        const shippingPrice = shippingPrices[method]; // Szállítási ár meghatározása
+    
         if (method === 'Futárszolgálat') {
-            onNext({ method, deliveryDetails });
+            onNext({
+                method,
+                deliveryDetails,
+                price: shippingPrice,
+            });
         } else if (method === 'Csomagpont') {
-            onNext({ method, lockerLocation });
+            onNext({
+                method,
+                lockerLocation,
+                price: shippingPrice,
+            });
         } else {
-            onNext(method);
+            onNext({
+                method,
+                price: shippingPrice,
+            });
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className="shipping-method-container">
@@ -82,7 +117,7 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
                     checked={method === 'Futárszolgálat'}
                     onChange={handleChange}
                 />
-                Futárszolgálat
+                Futárszolgálat - {shippingPrices['Futárszolgálat']} Ft
             </label>
             <label>
                 <input
@@ -94,7 +129,7 @@ const ShippingMethod = ({ onNext, onBack, selectedMethod, billingData }) => {
                         if (!availableLockers.length) fetchLockers();
                     }}
                 />
-                Csomagpont
+                Csomagautomata - {shippingPrices['Csomagautomata']} Ft
             </label>
 
             {/* Futárszolgálat adatok */}

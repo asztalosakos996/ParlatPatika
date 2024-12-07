@@ -126,15 +126,22 @@ async function extractDetailsFromInput(input) {
     console.log("A normalizált origin:", normalizedOrigins);
     const details = {};
 
-    // Input előfeldolgozása (kisbetűsítés, ékezetek eltávolítása)
+    // Input előfeldolgozása
     input = removeAccents(input.toLowerCase().replace(/[.,!?]/g, '').trim());
     console.log("Tisztított input:", input);
 
     // Árintervallum keresés
-    const priceMatch = input.match(/(\d+)-(\d+)/);
-    if (priceMatch) {
-        details.minPrice = parseInt(priceMatch[1]);
-        details.maxPrice = parseInt(priceMatch[2]);
+    const priceUnderMatch = input.match(/(\d+)\s*(ft|forint)\s*(alatt)/i); // Pl. "20000 forint alatt"
+    const priceAboveMatch = input.match(/(\d+)\s*(ft|forint)\s*(felett)/i); // Pl. "5000 forint felett"
+    const priceBetweenMatch = input.match(/(\d+)\s*(ft|forint)\s*(és)\s*(\d+)\s*(ft|forint)/i); // Pl. "5000 és 20000 forint között"
+
+    if (priceUnderMatch) {
+        details.maxPrice = parseInt(priceUnderMatch[1]);
+    } else if (priceAboveMatch) {
+        details.minPrice = parseInt(priceAboveMatch[1]);
+    } else if (priceBetweenMatch) {
+        details.minPrice = parseInt(priceBetweenMatch[1]);
+        details.maxPrice = parseInt(priceBetweenMatch[4]);
     }
 
     // Származási hely keresés az adatbázis alapján
@@ -142,7 +149,6 @@ async function extractDetailsFromInput(input) {
         `(${normalizedOrigins.join('|')})(ból|ből|ról|ről|ba|be|ra|re|on|en|ön|tól|től|hoz|hez|höz)?`,
         'i'
     );
-
     const locationMatch = input.match(originRegex);
     console.log("Origin regex találat:", locationMatch);
 
@@ -173,6 +179,7 @@ async function extractDetailsFromInput(input) {
 }
 
 
+
 // Termékajánló generálása
 async function generateProductRecommendation(userInput) {
     let details;
@@ -193,27 +200,54 @@ async function generateProductRecommendation(userInput) {
 
     if (!details.category) {
         console.warn(`Nem találtam kategóriát az input alapján: "${userInput}"`);
-        const aiPrompt = `Nem találtam ilyen kategóriát az adatbázisban a következő kérdés alapján: "${userInput}". Kérlek, generálj egy természetes választ magyarul, amely elmondja a felhasználónak, hogy sajnos nem tudok ilyen terméket ajánlani.`;
-        return await generateAIResponse(aiPrompt, 100);
+        return {
+            type: 'error',
+            message: `Nem találtam ilyen kategóriát az input alapján. Kérlek, próbálj meg pontosabb kérést megadni!`
+        };
     }
 
     try {
         const product = await fetchTopProductByCategory(details.category, details);
 
-        const aiPrompt = `Ajánlj egy terméket természetes szövegkörnyezetben a következő adatok alapján: 
-            Név: ${product.name}, 
-            Leírás: ${product.description}, 
-            Ár: ${product.price} Ft.`;
-        const productRecommendation = await generateAIResponse(aiPrompt, 150);
-
-        return productRecommendation;
-    } catch (error) {
-        if (error.message.includes("Nem található termék")) {
-            return `Sajnos jelenleg nem található termék a ${details.category} kategóriában. Kérlek, próbálj másik kategóriát!`;
+        // Ha nincs megfelelő termék
+        if (!product) {
+            return {
+                type: 'noProduct',
+                message: `Sajnos nem találtam terméket a ${details.category} kategóriában a megadott feltételek alapján. Próbálj másik kategóriát, származási helyet vagy árintervallumot megadni!`
+            };
         }
-        throw error;
+
+        // Ha találat van, visszakérdez a felhasználónál
+        return {
+            type: 'productRecommendation',
+            message: `Ajánlom neked a következő terméket: ${product.name}. Ez egy ${product.description}, amelynek ára: ${product.price} Ft. Megfelel ez neked, vagy keressek mást?`,
+            productId: product._id,
+            productName: product.name,
+            productPrice: product.price,
+            followUp: {
+                question: 'Ha tetszik a termék, szeretnéd, hogy hozzáadjam a kosaradhoz?',
+                actions: [
+                    {
+                        label: 'Igen, tedd a kosárba!',
+                        action: 'addToCart',
+                        payload: { productId: product._id, productName: product.name, productPrice: product.price }
+                    },
+                    {
+                        label: 'Nem, keress mást.',
+                        action: 'searchAgain'
+                    }
+                ]
+            }
+        };
+    } catch (error) {
+        console.error("Hiba történt termékajánlás közben:", error);
+        return {
+            type: 'error',
+            message: `Sajnálom, valami probléma történt a termékajánlás során. Kérlek, próbálkozz később!`
+        };
     }
 }
+
 
 module.exports = {
     generateProductDescription,
