@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './ChatWidget.css';
 import { useCart } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 
 const ChatWidget = () => {
     const { addToCart } = useCart(); // Kosárhoz hozzáférés
+    const { user } = useContext(AuthContext); // Felhasználó adataihoz hozzáférés
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([{ sender: 'bot', text: 'Üdvözöllek! Hogyan segíthetek?' }]);
     const [input, setInput] = useState('');
@@ -15,14 +16,14 @@ const ChatWidget = () => {
 
     const handleSendMessage = async () => {
         if (input.trim() === '') return;
-    
+
         // Felhasználói üzenet hozzáadása
         setMessages((prevMessages) => [
             ...prevMessages,
             { sender: 'user', text: input } // Felhasználói üzenet
         ]);
         setInput('');
-    
+
         try {
             const response = await fetch('http://localhost:5000/api/chat/recommendation', {
                 method: 'POST',
@@ -33,7 +34,7 @@ const ChatWidget = () => {
             });
             const data = await response.json();
             console.log('Kapott adat:', data);
-    
+
             // Bot válasz feldolgozása
             const botMessage = {
                 sender: 'bot',
@@ -43,11 +44,11 @@ const ChatWidget = () => {
                         id: data.message.productId,
                         name: data.message.productName,
                         price: data.message.productPrice,
-                      }
+                    }
                     : null,
                 followUp: data.message.followUp || null, // Opcionális follow-up kérdés
             };
-    
+
             setMessages((prevMessages) => [...prevMessages, botMessage]);
         } catch (error) {
             console.error('Hiba történt az ajánlás lekérése során:', error);
@@ -67,18 +68,23 @@ const ChatWidget = () => {
                 },
                 body: JSON.stringify({ input: 'Ajánlj nekem egy másik terméket!' }),
             });
-    
+
             const data = await response.json();
             console.log('Új termék ajánlás:', data);
-    
+
             if (data.message) {
                 setMessages((prev) => [
                     ...prev,
-                    { sender: 'bot', text: data.message },
-                    data.productId && {
+                    {
                         sender: 'bot',
-                        product: { id: data.productId, name: data.productName, price: data.productPrice },
-                        followUp: data.followUp,
+                        text: data.message.message,
+                        product: data.message.productId
+                            ? {
+                                id: data.message.productId,
+                                name: data.message.productName,
+                                price: data.message.productPrice,
+                            }
+                            : null,
                     },
                 ]);
             } else {
@@ -95,8 +101,6 @@ const ChatWidget = () => {
             ]);
         }
     };
-    
-    
 
     const handleAddToCart = (product) => {
         if (!product) {
@@ -109,7 +113,40 @@ const ChatWidget = () => {
             { sender: 'bot', text: `${product.name} hozzáadva a kosárhoz.` },
         ]);
     };
-    
+
+    const handleFeedback = async (feedback, productId) => {
+        const userId = user ? user.id : null;
+
+        if (!userId) {
+            console.error('Felhasználó azonosító nem érhető el. Ellenőrizd, hogy be vagy-e jelentkezve.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:5000/api/chat/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    feedback, // "like" vagy "dislike"
+                    productId,
+                    userId,
+                }),
+            });
+
+            if (response.ok) {
+                setMessages((prev) => [
+                    ...prev,
+                    { sender: 'bot', text: 'Köszönjük a visszajelzésedet!' },
+                ]);
+            } else {
+                console.error('Hiba történt a visszajelzés küldése során.');
+            }
+        } catch (error) {
+            console.error('Hiba történt a visszajelzés küldése során:', error);
+        }
+    };
 
     return (
         <div className="chat-widget">
@@ -124,8 +161,24 @@ const ChatWidget = () => {
                                 <p>{msg.text}</p>
                                 {msg.product && (
                                     <div>
-                                        <p>Termék: {msg.product.name}</p>
+                                        <p>
+                                            Termék:{' '}
+                                            <a href={`/products/${msg.product.id}`} rel="noopener noreferrer">
+                                                {msg.product.name}
+                                            </a>
+                                        </p>
                                         <p>Ár: {msg.product.price} Ft</p>
+                                        <div>
+                                            <button onClick={() => handleFeedback('like', msg.product.id)}>
+                                                Tetszik
+                                            </button>
+                                            <button onClick={() => handleFeedback('dislike', msg.product.id)}>
+                                                Nem tetszik
+                                            </button>
+                                            <button onClick={() => handleAddToCart(msg.product)}>
+                                                Kosárba helyezés
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                                 {msg.followUp && (
@@ -162,7 +215,6 @@ const ChatWidget = () => {
             )}
         </div>
     );
-
 };
 
 export default ChatWidget;
