@@ -9,6 +9,7 @@ const EditProductPage = () => {
     const [product, setProduct] = useState({
         name: '',
         description: '',
+        flavourNotes: '',
         price: '',
         alcoholContent: '',
         type: '',
@@ -116,6 +117,16 @@ const EditProductPage = () => {
                         value={product.description}
                         onChange={handleChange}
                         required
+                    />
+                </label>
+                <label className="form-label">
+                    Ízjegyek:
+                    <textarea
+                        className="form-textarea"
+                        name="flavourNotes"
+                        value={product.flavourNotes}
+                        onChange={handleChange}
+                        placeholder="Add meg az ízjegyeket (pl. citrus, vanília, fűszeres)"
                     />
                 </label>
                 <label className="form-label">

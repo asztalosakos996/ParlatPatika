@@ -5,7 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 
 const ChatWidget = () => {
     const { addToCart } = useCart(); // Kosárhoz hozzáférés
-    const { user } = useContext(AuthContext); // Felhasználó adataihoz hozzáférés
+    const { currentUser: user } = useContext(AuthContext); // Felhasználó adataihoz hozzáférés
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([{ sender: 'bot', text: 'Üdvözöllek! Hogyan segíthetek?' }]);
     const [input, setInput] = useState('');
@@ -115,38 +115,35 @@ const ChatWidget = () => {
     };
 
     const handleFeedback = async (feedback, productId) => {
-        const userId = user ? user.id : null;
-
-        if (!userId) {
-            console.error('Felhasználó azonosító nem érhető el. Ellenőrizd, hogy be vagy-e jelentkezve.');
+        if (!user) {
+            console.error('Nincs bejelentkezett felhasználó.');
             return;
         }
-
+    
         try {
             const response = await fetch('http://localhost:5000/api/chat/feedback', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    feedback, // "like" vagy "dislike"
+                    feedback,
                     productId,
-                    userId,
+                    userId: user.id,
                 }),
             });
-
+    
             if (response.ok) {
                 setMessages((prev) => [
                     ...prev,
-                    { sender: 'bot', text: 'Köszönjük a visszajelzésedet!' },
+                    { sender: 'bot', text: 'Visszajelzésedet köszönjük! A jövőben megpróbálunk mégjobban az igényeidre koncentrálni :)' },
                 ]);
             } else {
-                console.error('Hiba történt a visszajelzés küldése során.');
+                console.error('Hiba történt a visszajelzés feldolgozása során.');
             }
         } catch (error) {
-            console.error('Hiba történt a visszajelzés küldése során:', error);
+            console.error('Hiba történt:', error);
         }
     };
+    
 
     return (
         <div className="chat-widget">
@@ -161,25 +158,29 @@ const ChatWidget = () => {
                                 <p>{msg.text}</p>
                                 {msg.product && (
                                     <div>
-                                        <p>
-                                            Termék:{' '}
-                                            <a href={`/products/${msg.product.id}`} rel="noopener noreferrer">
-                                                {msg.product.name}
-                                            </a>
-                                        </p>
-                                        <p>Ár: {msg.product.price} Ft</p>
-                                        <div>
-                                            <button onClick={() => handleFeedback('like', msg.product.id)}>
-                                                Tetszik
-                                            </button>
-                                            <button onClick={() => handleFeedback('dislike', msg.product.id)}>
-                                                Nem tetszik
-                                            </button>
-                                            <button onClick={() => handleAddToCart(msg.product)}>
-                                                Kosárba helyezés
-                                            </button>
-                                        </div>
+                                    <p>
+                                        Termék:{' '}
+                                        <a href={`/products/${msg.product.id}`} rel="noopener noreferrer">
+                                            {msg.product.name}
+                                        </a>
+                                    </p>
+                                    <p>Ár: {msg.product.price} Ft</p>
+                                    <div>
+                                        {user ? ( // Csak bejelentkezett felhasználóknak jelenítjük meg
+                                            <>
+                                                <button onClick={() => handleFeedback('like', msg.product.id)}>
+                                                    Tetszik
+                                                </button>
+                                                <button onClick={() => handleFeedback('dislike', msg.product.id)}>
+                                                    Nem tetszik
+                                                </button>
+                                            </>
+                                        ) : null}
+                                        <button onClick={() => handleAddToCart(msg.product)}>
+                                            Kosárba helyezés
+                                        </button>
                                     </div>
+                                </div>
                                 )}
                                 {msg.followUp && (
                                     <div>

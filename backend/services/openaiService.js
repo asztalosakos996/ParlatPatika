@@ -104,8 +104,19 @@ async function fetchTopProductByCategory(categoryName, details = {}) {
 
 // Termékleírás generálása
 async function generateProductDescription(prompt) {
-    const aiPrompt = `Írj egy termékleírást magyarul a következő termékről, de úgy, hogy beleférjen a 200 tokenbe: ${prompt}`;
-    return await generateAIResponse(aiPrompt, 200);
+    const aiPrompt = `Írj egy termékleírást magyarul a következő termékről, legalább 3 mondatban úgy, hogy a későbbiekben relevánsan felhasználható legyen az 
+    AI segéd tanulásához, illetve tartalmazza az ízjgyeket is: ${prompt}. Majd egy sörtörés után új bekezdésben írd le, hogy kinek ajánljuk.`;
+    
+    const fullDescription = await generateAIResponse(aiPrompt, 500);
+
+    // Az AI által generált válaszból különítsük el az ízjegyeket (ha szükséges)
+    const flavourNotesPrompt = `Kérlek, listázd az ízjegyeket a következő termékleírás alapján: "${fullDescription}". Az eredmény legyen egy vesszővel elválasztott lista, például: citrusos, vaníliás, fűszeres. Pontosan 3 ízjegyet sorolj fel.`;
+    const flavourNotes = await generateAIResponse(flavourNotesPrompt, 100);
+
+    return {
+        description: fullDescription,
+        flavourNotes: flavourNotes, // Ízjegyek külön generálva
+    };
 }
 
 // Blogtartalom generálása

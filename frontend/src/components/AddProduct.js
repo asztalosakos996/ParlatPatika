@@ -7,6 +7,7 @@ const AddProduct = () => {
     const [category, setCategory] = useState('');
     const [categories, setCategories] = useState([]);
     const [description, setDescription] = useState('');
+    const [flavourNotes, setFlavourNotes] = useState('');
     const [alcoholContent, setAlcoholContent] = useState('');
     const [type, setType] = useState('');
     const [origin, setOrigin] = useState('');
@@ -47,6 +48,7 @@ const AddProduct = () => {
             const data = await response.json();
             if (response.ok) {
                 setDescription(data.description);
+                setFlavourNotes(data.flavourNotes);
             } else {
                 setAiError(data.message || 'Hiba történt a leírás generálása során.');
             }
@@ -64,6 +66,7 @@ const AddProduct = () => {
         formData.append('price', price);
         formData.append('category', category);
         formData.append('description', description);
+        formData.append('flavourNotes', flavourNotes);
         formData.append('alcoholContent', alcoholContent);
         formData.append('type', type);
         formData.append('origin', origin);
@@ -146,7 +149,13 @@ const AddProduct = () => {
                     {aiLoading ? 'Generálás folyamatban...' : 'AI Leírás Generálása'}
                 </button>
                 {aiError && <p className="error-message">{aiError}</p>}
-
+                <label htmlFor="flavourNotes">Ízjegyek:</label>
+                <textarea
+                    id="flavourNotes"
+                    value={flavourNotes}
+                    onChange={(e) => setFlavourNotes(e.target.value)}
+                    placeholder="Add meg az ízjegyeket (pl. citrus, vanília, fűszeres)"
+                />
                 <label>Alkohol tartalom (%):</label>
                 <input
                     type="number"

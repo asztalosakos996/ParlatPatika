@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    flavourNotes: {
+        type: String,
+        required: false,
+    },
     origin: {
         type: String,
         required: true,

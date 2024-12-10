@@ -27,7 +27,7 @@ router.post('/', upload.single('image'), async (req, res) => {
     console.log('Request body:', req.body);
     console.log('Request file:', req.file);
 
-    const { name, description, price, alcoholContent, type, origin, bottleSize, category } = req.body;
+    const { name, description, flavourNotes, price, alcoholContent, type, origin, bottleSize, category } = req.body;
     console.log('Category ID received:', category);
 
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
@@ -42,6 +42,7 @@ router.post('/', upload.single('image'), async (req, res) => {
         const newProduct = new Product({
             name,
             description,
+            flavourNotes,
             price,
             image: imageUrl,
             alcoholContent,
@@ -96,11 +97,12 @@ router.put('/:id', upload.single('image'), async (req, res) => {
 
     try {
         const { id } = req.params;
-        const { name, description, price, alcoholContent, type, origin, bottleSize, category } = req.body;
+        const { name, description, flavourNotes, price, alcoholContent, type, origin, bottleSize, category } = req.body;
 
         const updatedProduct = {
             name,
             description,
+            flavourNotes,
             price,
             alcoholContent,
             type,
@@ -194,8 +196,8 @@ router.post('/search', async (req, res) => {
 router.post('/generate-description', async (req, res) => {
     const { productPrompt } = req.body;
     try {
-        const description = await generateProductDescription(productPrompt);
-        res.status(200).json({ description });
+        const { description, flavourNotes } = await generateProductDescription(productPrompt);
+        res.status(200).json({ description, flavourNotes });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
