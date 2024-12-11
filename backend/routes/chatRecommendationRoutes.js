@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Feedback = require('../models/Feedback');
 const Product = require('../models/Product');
 const Model = require('../models/Model');
-const { generateProductRecommendation } = require('../services/openaiService');
+const { generateProductRecommendation, generateContextualResponse, extractDetailsFromInput, fetchTopProductByCategory } = require('../services/openaiService');
 const { trainModel, loadModel, predictNextPurchase, updateModelWithFeedback } = require('../services/tensorFlowService');
 const { saveFeedbackToDatabase } = require('../services/feedbackService');
 const router = express.Router();
@@ -74,6 +74,56 @@ router.post('/feedback', async (req, res) => {
         res.status(500).json({ message: 'Hiba történt a visszajelzés feldolgozása során.' });
     }
 });
+
+const userConversations = new Map(); // Felhasználói beszélgetési kontextus tárolása
+
+router.post('/', async (req, res) => {
+    const { userId, message } = req.body;
+
+    if (!userId || !message) {
+        return res.status(400).json({ message: 'Hiányzó adatok: userId vagy message.' });
+    }
+
+    // Felhasználói kontextus lekérése vagy inicializálása
+    let userContext = userConversations.get(userId) || { lastProduct: null };
+
+    try {
+        // Ha az üzenet új ajánlást kér
+        if (message.toLowerCase().includes('ajánlj') || !userContext.lastProduct) {
+            const productDetails = await extractDetailsFromInput(message); // Bemenet elemzése
+            const recommendedProduct = await fetchTopProductByCategory(productDetails);
+
+            if (!recommendedProduct) {
+                return res.status(200).json({
+                    message: 'Sajnos nem találtam megfelelő terméket. Próbálj másik keresési feltételt, vagy nézd meg az összes terméket!'
+                });
+            }
+
+            // Kontextus frissítése új ajánlással
+            userContext.lastProduct = recommendedProduct;
+            userConversations.set(userId, userContext);
+
+            return res.status(200).json({
+                message: `Ajánlom neked: ${recommendedProduct.name}.`,
+                productId: recommendedProduct._id,
+                productName: recommendedProduct.name,
+                productPrice: recommendedProduct.price,
+            });
+        }
+
+        // Ha az üzenet kérdés az előző ajánlásról
+        const response = await generateContextualResponse(
+            userContext.lastProduct.description,
+            message
+        );
+
+        return res.status(200).json({ message: response });
+    } catch (error) {
+        console.error('Hiba a beszélgetés feldolgozása során:', error);
+        return res.status(500).json({ message: 'Hiba történt a kérés feldolgozása során.' });
+    }
+});
+
 
 
 

@@ -16,48 +16,57 @@ const ChatWidget = () => {
 
     const handleSendMessage = async () => {
         if (input.trim() === '') return;
-
-        // Felhasználói üzenet hozzáadása
+    
+        // Felhasználói üzenet hozzáadása a chathez
         setMessages((prevMessages) => [
             ...prevMessages,
             { sender: 'user', text: input } // Felhasználói üzenet
         ]);
-        setInput('');
-
+        setInput(''); // Input mező törlése
+    
         try {
-            const response = await fetch('http://localhost:5000/api/chat/recommendation', {
+            // Küldés a backendnek
+            const response = await fetch('http://localhost:5000/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ input: input.trim() }),
+                body: JSON.stringify({ userId: user?.id || 'guest', message: input.trim() }), // userId a beszélgetési kontextushoz
             });
+    
             const data = await response.json();
             console.log('Kapott adat:', data);
-
+    
             // Bot válasz feldolgozása
-            const botMessage = {
-                sender: 'bot',
-                text: data.message.message, // Backend által küldött ajánlás szöveg
-                product: data.message.productId
-                    ? {
-                        id: data.message.productId,
-                        name: data.message.productName,
-                        price: data.message.productPrice,
-                    }
-                    : null,
-                followUp: data.message.followUp || null, // Opcionális follow-up kérdés
-            };
-
-            setMessages((prevMessages) => [...prevMessages, botMessage]);
-        } catch (error) {
-            console.error('Hiba történt az ajánlás lekérése során:', error);
             setMessages((prevMessages) => [
                 ...prevMessages,
-                { sender: 'bot', text: 'Hiba történt a válaszadás során.' }
+                { sender: 'bot', text: data.message } // Backend által visszaküldött válasz
+            ]);
+    
+            // Ha van termék, megjelenítjük
+            if (data.productId) {
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    {
+                        sender: 'bot',
+                        text: `Ajánlom a következő terméket: ${data.productName} (${data.productPrice} Ft)`,
+                        product: {
+                            id: data.productId,
+                            name: data.productName,
+                            price: data.productPrice,
+                        },
+                    },
+                ]);
+            }
+        } catch (error) {
+            console.error('Hiba történt az üzenet feldolgozása során:', error);
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { sender: 'bot', text: 'Hiba történt a válaszadás során. Kérlek, próbáld újra!' }
             ]);
         }
     };
+    
 
     const handleSearchAgain = async () => {
         try {

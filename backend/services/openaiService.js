@@ -118,12 +118,12 @@ async function fetchTopProductByCategory(details = {}) {
                 const productNotes = Array.isArray(product.flavourNotes)
                     ? product.flavourNotes
                     : product.flavourNotes.split(',').map(n => n.trim());
-        
+    
                 const normalizedProductNotes = productNotes.map(note => removeAccents(note.toLowerCase()));
                 
                 return normalizedFlavourNotes.some(note => normalizedProductNotes.includes(note));
             });
-
+    
             if (filteredProducts.length > 0) {
                 console.log("Ízjegyek alapján szűrt termékek:", filteredProducts);
                 return filteredProducts.sort((a, b) => b.popularity - a.popularity)[0];
@@ -317,10 +317,22 @@ async function generateProductRecommendation(userInput) {
     }
 }
 
+async function generateContextualResponse(productDescription, userQuestion) {
+    const prompt = `
+    Termékleírás: "${productDescription}"
+    Felhasználói kérdés: "${userQuestion}"
+    Adj egy releváns választ hogy miért ajánlod vagy miért nem ajánlod ezt a terméket a felhasználó kérdésében adott szituációra vagy személynek.
+    `;
+    return await generateAIResponse(prompt, 300, 0.7);
+}
+
 
 
 module.exports = {
     generateProductDescription,
     generateBlogContent,
     generateProductRecommendation,
+    generateContextualResponse,
+    extractDetailsFromInput,
+    fetchTopProductByCategory,
 };
