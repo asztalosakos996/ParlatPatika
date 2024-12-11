@@ -176,9 +176,6 @@ const ChatWidget = () => {
                                                 </button>
                                             </>
                                         ) : null}
-                                        <button onClick={() => handleAddToCart(msg.product)}>
-                                            Kosárba helyezés
-                                        </button>
                                     </div>
                                 </div>
                                 )}

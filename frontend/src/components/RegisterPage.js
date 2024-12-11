@@ -202,14 +202,6 @@ const RegisterPage = () => {
                         onChange={handleChange}
                         required
                     />
-    
-                    <label>Cég esetén adószám:</label>
-                    <input
-                        type="text"
-                        name="taxNumber"
-                        value={formData.taxNumber}
-                        onChange={handleChange}
-                    />
                 </div>
     
                 <div className="form-section">

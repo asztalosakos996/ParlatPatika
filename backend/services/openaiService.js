@@ -28,7 +28,6 @@ const synonyms = {
     gin: ["gin", "gines italok", "ginfélék"],
     whiskey: ["whiskey", "whisky", "whiskeys"],
     rum: ["rum", "rummok", "rums"],
-    // További kategóriák és szinonimák hozzáadása
 };
 
 function removeAccents(str) {
@@ -58,49 +57,94 @@ async function fetchOrigins() {
     }
 }
 
-// Termékek lekérdezése több paraméter alapján
-async function fetchTopProductByCategory(categoryName, details = {}) {
+async function fetchFlavourNotes() {
     try {
-        const category = await Category.findOne({ name: new RegExp(`^${categoryName}$`, 'i') });
-        if (!category) {
-            throw new Error(`Nem található kategória a következő névvel: ${categoryName}`);
+        // Az összes egyedi ízjegy kinyerése a termékekből
+        const flavourNotes = await Product.distinct('flavourNotes');
+        console.log("Lekért ízjegyek (egyben):", flavourNotes);
+
+        // Szavakra bontás és duplikációk eltávolítása
+        const uniqueNotes = Array.from(new Set(
+            flavourNotes
+                .flatMap(note => note.split(',').map(n => n.trim())) // Szétbontás vessző szerint és trimelés
+                .map(note => removeAccents(note.toLowerCase())) // Normalizálás: kisbetűs, ékezet nélkül
+        ));
+
+        console.log("Egyedi ízjegyek:", uniqueNotes);
+        return uniqueNotes;
+    } catch (error) {
+        console.error('Hiba történt az ízjegyek lekérése során:', error);
+        return [];
+    }
+}
+
+
+
+// Termékek lekérdezése több paraméter alapján
+async function fetchTopProductByCategory(details = {}) {
+    try {
+        const query = {};
+
+        // Kategória hozzáadása a lekérdezéshez (ha van megadva)
+        if (details.category) {
+            const category = await Category.findOne({ name: new RegExp(`^${details.category}$`, 'i') });
+            if (category) {
+                query.category = category._id;
+            }
         }
 
-        console.log("Lekért kategória ID:", category._id);
-        console.log("Kapott details objektum:", details);
-
-        // Alapértelmezett árértékek
-        const minPrice = details.minPrice || 0;
-        const maxPrice = details.maxPrice || Infinity;
-
-        // Lekérdezés az összes termékre a kategórián belül
-        const allProducts = await Product.find({
-            category: category._id,
-            price: { $gte: minPrice, $lte: maxPrice },
-        });
-
-        console.log("Összes termék:", allProducts);
-
-        // JavaScript szinten szűrés az origin alapján
-        const normalizedOrigin = removeAccents(details.origin?.toLowerCase() || "");
-        const filteredProducts = allProducts.filter(product => {
-            const productOrigin = removeAccents(product.origin.toLowerCase());
-            return productOrigin === normalizedOrigin;
-        });
-
-        console.log("Szűrt termékek az origin alapján:", filteredProducts);
-
-        if (filteredProducts.length === 0) {
-            throw new Error(`Nem található termék a ${categoryName} kategóriában.`);
+        // Árintervallum hozzáadása a lekérdezéshez (ha van megadva)
+        if (details.minPrice !== undefined || details.maxPrice !== undefined) {
+            query.price = {};
+            if (details.minPrice !== undefined) query.price.$gte = details.minPrice;
+            if (details.maxPrice !== undefined) query.price.$lte = details.maxPrice;
         }
 
-        // Népszerűség alapján rendezzük és az első terméket adjuk vissza
-        return filteredProducts.sort((a, b) => b.popularity - a.popularity)[0];
+        // Származási hely hozzáadása a lekérdezéshez (ha van megadva)
+        if (details.origin) {
+            const normalizedOrigin = removeAccents(details.origin.toLowerCase());
+            query.origin = new RegExp(`^${normalizedOrigin}$`, 'i');
+        }
+
+        console.log("Generált MongoDB lekérdezés:", query);
+
+        // Termékek lekérdezése az eddigi szűrők alapján
+        const allProducts = await Product.find(query).lean();
+
+        // Ízjegyek szűrése (ha vannak megadva)
+        if (details.flavourNotes && details.flavourNotes.length) {
+            const normalizedFlavourNotes = details.flavourNotes.map(note => removeAccents(note.toLowerCase()));
+            const filteredProducts = allProducts.filter(product => {
+                const productNotes = Array.isArray(product.flavourNotes)
+                    ? product.flavourNotes
+                    : product.flavourNotes.split(',').map(n => n.trim());
+        
+                const normalizedProductNotes = productNotes.map(note => removeAccents(note.toLowerCase()));
+                
+                return normalizedFlavourNotes.some(note => normalizedProductNotes.includes(note));
+            });
+
+            if (filteredProducts.length > 0) {
+                console.log("Ízjegyek alapján szűrt termékek:", filteredProducts);
+                return filteredProducts.sort((a, b) => b.popularity - a.popularity)[0];
+            }
+        }
+
+        // Ha nincs találat az ízjegyek szűrése után, az összes terméket visszaadjuk
+        if (allProducts.length === 0) {
+            throw new Error("Nem található termék a megadott feltételek alapján.");
+        }
+
+        // Népszerűség alapján rendezés és az első termék visszaadása
+        return allProducts.sort((a, b) => b.popularity - a.popularity)[0];
     } catch (error) {
         console.error("Hiba történt a termék lekérése során:", error.message);
         throw error;
     }
 }
+
+
+
 
 // Termékleírás generálása
 async function generateProductDescription(prompt) {
@@ -131,20 +175,23 @@ async function extractDetailsFromInput(input) {
         throw new TypeError(`Invalid input: expected a string but received ${typeof input}`);
     }
 
-    const categoryNames = await fetchCategories(); // Kategóriák lekérése
-    const origins = await fetchOrigins(); // Származási helyek lekérése
+    // Kategóriák, származási helyek és ízjegyek lekérése
+    const categoryNames = await fetchCategories();
+    const origins = await fetchOrigins();
+    const flavourNotes = await fetchFlavourNotes();
     const normalizedOrigins = origins.map(origin => removeAccents(origin.toLowerCase())); // Ékezetek eltávolítása
     console.log("A normalizált origin:", normalizedOrigins);
-    const details = {};
+
+    const details = {}; // Az összegyűjtött adatok tárolására
 
     // Input előfeldolgozása
     input = removeAccents(input.toLowerCase().replace(/[.,!?]/g, '').trim());
     console.log("Tisztított input:", input);
 
     // Árintervallum keresés
-    const priceUnderMatch = input.match(/(\d+)\s*(ft|forint)\s*(alatt)/i); // Pl. "20000 forint alatt"
-    const priceAboveMatch = input.match(/(\d+)\s*(ft|forint)\s*(felett)/i); // Pl. "5000 forint felett"
-    const priceBetweenMatch = input.match(/(\d+)\s*(ft|forint)\s*(és)\s*(\d+)\s*(ft|forint)/i); // Pl. "5000 és 20000 forint között"
+    const priceUnderMatch = input.match(/(\d+)\s*(ft|forint)\s*(alatt)/i);
+    const priceAboveMatch = input.match(/(\d+)\s*(ft|forint)\s*(felett)/i);
+    const priceBetweenMatch = input.match(/(\d+)\s*(ft|forint)\s*(és)\s*(\d+)\s*(ft|forint)/i);
 
     if (priceUnderMatch) {
         details.maxPrice = parseInt(priceUnderMatch[1]);
@@ -155,7 +202,13 @@ async function extractDetailsFromInput(input) {
         details.maxPrice = parseInt(priceBetweenMatch[4]);
     }
 
-    // Származási hely keresés az adatbázis alapján
+    // Ízjegyek keresése
+    const foundFlavourNotes = flavourNotes.filter(note => input.includes(note));
+    if (foundFlavourNotes.length) {
+        details.flavourNotes = foundFlavourNotes;
+    }
+
+    // Származási hely keresés
     const originRegex = new RegExp(
         `(${normalizedOrigins.join('|')})(ból|ből|ról|ről|ba|be|ra|re|on|en|ön|tól|től|hoz|hez|höz)?`,
         'i'
@@ -167,7 +220,7 @@ async function extractDetailsFromInput(input) {
         details.origin = locationMatch[1].trim(); // Csak az alap nevet vesszük ki (pl. "Németország")
     }
 
-    // Kategória keresés szinonimák alapján
+    // Kategóriák keresése szinonimák és adatbázis alapján
     for (const [canonicalCategory, aliasList] of Object.entries(synonyms)) {
         if (aliasList.some(alias => input.includes(alias))) {
             details.category = canonicalCategory;
@@ -175,7 +228,7 @@ async function extractDetailsFromInput(input) {
         }
     }
 
-    // Ha nem találunk szinonimát, ellenőrizzük az adatbázis kategóriáit
+    // Ha szinonimák alapján nincs találat, ellenőrizzük az adatbázis kategóriáit
     if (!details.category) {
         for (let category of categoryNames) {
             if (input.includes(category)) {
@@ -185,9 +238,12 @@ async function extractDetailsFromInput(input) {
         }
     }
 
+    // Összegyűjtött adatok naplózása
     console.log("Kinyert details objektum a bemenetfeldolgozás után:", details);
+
     return details;
 }
+
 
 
 
@@ -209,22 +265,24 @@ async function generateProductRecommendation(userInput) {
 
     console.log("Kinyert details objektum:", details);
 
-    if (!details.category) {
-        console.warn(`Nem találtam kategóriát az input alapján: "${userInput}"`);
+    // Ellenőrizzük, hogy van-e bármilyen keresési paraméter
+    if (Object.keys(details).length === 0) {
+        console.warn(`Nem találtam keresési feltételeket az input alapján: "${userInput}"`);
         return {
             type: 'error',
-            message: `Nem találtam ilyen kategóriát az input alapján. Kérlek, próbálj meg pontosabb kérést megadni!`
+            message: `Nem találtam keresési feltételeket az input alapján. Kérlek, próbálj meg pontosabb kérést megadni!`
         };
     }
 
     try {
-        const product = await fetchTopProductByCategory(details.category, details);
+        // Termékek keresése a megadott feltételek alapján
+        const product = await fetchTopProductByCategory(details);
 
         // Ha nincs megfelelő termék
         if (!product) {
             return {
                 type: 'noProduct',
-                message: `Sajnos nem találtam terméket a ${details.category} kategóriában a megadott feltételek alapján. Próbálj másik kategóriát, származási helyet vagy árintervallumot megadni!`
+                message: `Sajnos nem találtam terméket a megadott feltételek alapján. Próbálj másik származási helyet, kategóriát, árintervallumot vagy ízjegyet megadni!`
             };
         }
 
@@ -243,10 +301,10 @@ async function generateProductRecommendation(userInput) {
                         action: 'addToCart',
                         payload: { productId: product._id, productName: product.name, productPrice: product.price }
                     },
-                    {
+                    /*{
                         label: 'Nem, keress mást.',
                         action: 'searchAgain'
-                    }
+                    }*/
                 ]
             }
         };
@@ -258,6 +316,7 @@ async function generateProductRecommendation(userInput) {
         };
     }
 }
+
 
 
 module.exports = {
