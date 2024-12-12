@@ -86,6 +86,20 @@ router.post('/', async (req, res) => {
     }
 
     try {
+        // Ha a felhasználónak már volt ajánlott terméke
+        if (userConversations.has(userId)) {
+            const previousRecommendation = userConversations.get(userId);
+
+            // Ellenőrizzük, hogy az üzenet általános kérdés-e
+            const isGeneralQuery = message.toLowerCase().includes('miért') || message.toLowerCase().includes('jó ajándék');
+
+            if (isGeneralQuery) {
+                // OpenAI API segítségével releváns válasz generálása
+                const response = await generateContextualResponse(previousRecommendation.description, message);
+                return res.status(200).json({ message: response });
+            }
+        }
+
         // 1. Modell betöltése
         const model = await loadModel(userId);
         let recommendedProduct = null;
@@ -155,6 +169,9 @@ router.post('/', async (req, res) => {
                 console.log('Legmagasabb predikciós értékű termék:', recommendedProduct.name);
             }
         }
+
+        // Tároljuk az ajánlott terméket
+        userConversations.set(userId, recommendedProduct);
 
         // 5. Ha van visszajelzés, azt mentjük és újratanítjuk a modellt
         if (feedback && productId) {

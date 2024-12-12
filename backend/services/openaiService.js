@@ -317,13 +317,15 @@ async function generateProductRecommendation(userInput) {
     }
 }
 
-async function generateContextualResponse(productDescription, userQuestion) {
-    const prompt = `
-    Termékleírás: "${productDescription}"
-    Felhasználói kérdés: "${userQuestion}"
-    Adj egy releváns választ hogy miért ajánlod vagy miért nem ajánlod ezt a terméket a felhasználó kérdésében adott szituációra vagy személynek.
-    `;
-    return await generateAIResponse(prompt, 300, 0.7);
+async function generateContextualResponse(description, message) {
+    const prompt = `Egy chatbot vagy, amely prémium italokat ajánl. Az ital leírása: "${description}". Az ügyfél kérdése: "${message}". Adj releváns választ.`;
+
+    try {
+        return await generateAIResponse(prompt, 150, 0.7);
+    } catch (error) {
+        console.error("Hiba történt a generateContextualResponse során:", error);
+        throw new Error("Nem sikerült releváns választ generálni.");
+    }
 }
 
 
