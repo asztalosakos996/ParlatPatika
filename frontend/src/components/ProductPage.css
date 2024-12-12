@@ -185,3 +185,22 @@
     color: #a71d2a;
     transform: scale(1.2);
 }
+
+.admin-actions .fa-star {
+    color: #ccc;
+}
+
+.admin-actions .fa-star.favourite {
+    color: #ffd700;
+}
+
+.fas.fa-star {
+    color: gray;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.fas.fa-star.favourite {
+    color: gold;
+}
+

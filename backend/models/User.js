@@ -24,10 +24,7 @@ const userSchema = new mongoose.Schema({
         postalCode: { type: String, required: true },
         city: { type: String, required: true },
     },
-    taxNumber: {
-        type: String,
-        required: false,
-    },
+    favourites: { type: [mongoose.Schema.Types.ObjectId], ref: 'Product', default: [], required: false },
     isAdmin: {
         type: Boolean,
         default: false,

@@ -32,7 +32,7 @@ const trainModel = async (userId, inputData, outputData) => {
     // Ha nincs adat, dummy adatok használata az alapmodell létrehozásához
     if (!inputData.length || !outputData.length) {
         console.warn('Üres bemenet vagy kimenet. Dummy adatokkal hozunk létre egy alapmodellt...');
-        inputData = [[0, 0, 0, 0, 0]]; // Dummy bemenet (például 5 feature értékkel)
+        inputData = [[0, 0, 0, 0, 0, 0, 0]]; // Dummy bemenet (például 7 feature értékkel)
         outputData = [0]; // Dummy kimenet
     }
 
@@ -80,7 +80,6 @@ const trainModel = async (userId, inputData, outputData) => {
 
 
 
-
 // Modell betöltése az adatbázisból
 const loadModel = async (userId) => {
     try {
@@ -117,21 +116,25 @@ const loadModel = async (userId) => {
 };
 
 
-
 // Előrejelzés készítése
 const predictNextPurchase = (model, product) => {
+    console.log('Beléptünk a predictNextPurchase-be');
     try {
         const input = [
-            product.price,
-            product.alcoholContent,
-            product.origin.length,
-            product.bottleSize.replace(/\D/g, '') || 0,
-            ...product.flavourNotes.map(note => note.length || 0)
+            product.price || 0,
+            product.alcoholContent || 0,
+            (product.origin || '').length || 0,
+            parseInt((product.bottleSize || '').replace(/\D/g, '')) || 0,
+            ...product.flavourNotes.split(',').map(note => note.trim().length || 0)
         ];
 
-        const inputTensor = tf.tensor2d([input]);
+        const inputTensor = tf.tensor2d([input], [1, input.length]);
         const prediction = model.predict(inputTensor);
-        return prediction.arraySync();
+
+        const predictionArray = prediction.arraySync();
+        console.log('Előrejelzés eredménye:', predictionArray);
+
+        return predictionArray;
     } catch (error) {
         console.error('Hiba a predikció készítése közben:', error);
         return null;
@@ -188,7 +191,6 @@ const updateModelWithFeedback = async (userId) => {
     // Modell tanítása
     return await trainModel(userId, inputData, outputData);
 };
-
 
 
 module.exports = { trainModel, loadModel, predictNextPurchase, updateModelWithFeedback };

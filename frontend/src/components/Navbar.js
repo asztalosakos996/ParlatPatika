@@ -37,6 +37,14 @@ const Navbar = () => {
     const isAdmin = currentUser?.isAdmin;
     const navigate = useNavigate();
 
+    const navigateToSection = (section) => {
+        navigate('/'); // Átirányít a főoldalra
+        setTimeout(() => {
+            document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Vár egy kicsit, hogy a főoldal betöltődjön
+    };
+    
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobileView(window.innerWidth <= 768);
@@ -187,44 +195,30 @@ const Navbar = () => {
                 ref={hamburgerMenuRef}
             >
                 <ul>
-                    <li>
-                    <ScrollLink
-                        to="categories"
-                        smooth={true}
-                        duration={500}
-                        onClick={toggleHamburgerMenu}
-                    >
-                        Kategóriák
-                    </ScrollLink>
-                    </li>
-                    <li>
-                    <ScrollLink
-                        to="popular-products"
-                        smooth={true}
-                        duration={500}
-                        onClick={toggleHamburgerMenu}
-                    >
-                        Népszerű termékek
-                    </ScrollLink>
-                    </li>
-                    <li>
-                    <ScrollLink
-                        to="blog"
-                        smooth={true}
-                        duration={500}
-                        onClick={toggleHamburgerMenu}
-                    >
-                        Blog
-                    </ScrollLink>
-                    </li>
-                    <li><ScrollLink
-                        to="contact"
-                        smooth={true}
-                        duration={500}
-                        onClick={toggleHamburgerMenu}
-                    >
-                        Kapcsolat
-                    </ScrollLink></li>
+                        <li onClick={() => {
+            navigateToSection('categories');
+            setShowHamburgerMenu(false); // Bezárja a menüt
+        }}>
+            Kategóriák
+        </li>
+        <li onClick={() => {
+            navigateToSection('popular-products');
+            setShowHamburgerMenu(false);
+        }}>
+            Népszerű termékek
+        </li>
+        <li onClick={() => {
+            navigateToSection('blog');
+            setShowHamburgerMenu(false);
+        }}>
+            Blog
+        </li>
+        <li onClick={() => {
+            navigateToSection('contact');
+            setShowHamburgerMenu(false);
+        }}>
+            Kapcsolat
+        </li>
                     <li>
                         {/* Keresőmező (mobil) */}
                         <form onSubmit={handleSearchSubmit}>
@@ -246,26 +240,19 @@ const Navbar = () => {
 
             {/* Navigációs linkek */}
             <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-            <li>
-                    <ScrollLink to="categories" smooth={true} duration={500}>
-                    Kategóriák
-                    </ScrollLink>
+                <li onClick={() => navigateToSection('categories')}>
+                    <span>Kategóriák</span>
                 </li>
-                <li>
-                    <ScrollLink to="popular-products" smooth={true} duration={500}>
-                    Népszerű termékek
-                    </ScrollLink>
+                <li onClick={() => navigateToSection('popular-products')}>
+                    <span>Népszerű termékek</span>
                 </li>
-                <li>
-                    <ScrollLink to="blog" smooth={true} duration={500}>
-                    Blog
-                    </ScrollLink>
+                <li onClick={() => navigateToSection('blog')}>
+                    <span>Blog</span>
                 </li>
-                <li>
-                    <ScrollLink to="contact" smooth={true} duration={500}>
-                    Kapcsolat
-                    </ScrollLink>
+                <li onClick={() => navigateToSection('contact')}>
+                    <span>Kapcsolat</span>
                 </li>
+
                 <li>
                     {/* Keresőmező (desktop) */}
                     <form onSubmit={handleSearchSubmit}>
@@ -297,7 +284,7 @@ const Navbar = () => {
                                 <ul>
                                     <li><Link to="/details">Adataim</Link></li>
                                     <li><Link to="/orders">Megrendelések</Link></li>
-                                    <li><Link to="/favorites">Kedvencek</Link></li>
+                                    <li><Link to="/favourites">Kedvencek</Link></li>
                                     {isAdmin && <li><Link to="/admin">Admin Funkciók</Link></li>}
                                 </ul>
                                 <button onClick={handleLogout}>Kilépés</button>

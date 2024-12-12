@@ -3,12 +3,13 @@ const User = require('../models/User');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 const { verifyUser } = require('../middleware/authMiddleware');
+const { registerLimiter, loginLimiter } = require('../middleware/rateLimiter');
 
 
 const router = express.Router();
 
 // Regisztráció
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimiter, async (req, res) => {
     const { name, email, password, phone, address } = req.body;
 
     const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*._-])(?=.*[A-Za-z]).{8,}$/;
@@ -45,7 +46,7 @@ router.post('/register', async (req, res) => {
 
 
 // Bejelentkezés
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
     console.log("Belépett a bejelentkezési funkcióba");
     const { email, password } = req.body;
 
@@ -181,6 +182,60 @@ router.get('/me', verifyUser, async (req, res) => {
         res.status(500).json({ message: 'Hiba történt a felhasználó adatainak lekérdezésekor' });
     }
 });
+
+router.post('/favourites/:productId', verifyUser, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Felhasználó nem található.' });
+        }
+
+        if (!user.favourites.includes(req.params.productId)) {
+            user.favourites.push(req.params.productId);
+            await user.save();
+            return res.status(200).json({ message: 'Termék hozzáadva a kedvencekhez.' });
+        }
+
+        res.status(400).json({ message: 'A termék már a kedvencek között van.' });
+    } catch (error) {
+        console.error('Hiba történt a kedvencek hozzáadásakor:', error);
+        res.status(500).json({ message: 'Hiba történt a kedvencek hozzáadásakor.' });
+    }
+});
+
+router.delete('/favourites/:productId', verifyUser, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Felhasználó nem található.' });
+        }
+
+        user.favourites = user.favourites.filter(
+            (favouriteId) => favouriteId.toString() !== req.params.productId
+        );
+        await user.save();
+        res.status(200).json({ message: 'Termék eltávolítva a kedvencekből.' });
+    } catch (error) {
+        console.error('Hiba történt a kedvencek eltávolításakor:', error);
+        res.status(500).json({ message: 'Hiba történt a kedvencek eltávolításakor.' });
+    }
+});
+
+router.get('/favourites', verifyUser, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).populate('favourites');
+        if (!user) {
+            return res.status(404).json({ message: 'Felhasználó nem található.' });
+        }
+
+        res.status(200).json(user.favourites);
+    } catch (error) {
+        console.error('Hiba történt a kedvencek lekérdezésekor:', error);
+        res.status(500).json({ message: 'Hiba történt a kedvencek lekérdezésekor.' });
+    }
+});
+
+
 
 
 module.exports = router;

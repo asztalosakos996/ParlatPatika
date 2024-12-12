@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const tf = require('@tensorflow/tfjs');
 const Feedback = require('../models/Feedback');
 const Product = require('../models/Product');
 const Model = require('../models/Model');
@@ -78,54 +79,112 @@ router.post('/feedback', async (req, res) => {
 const userConversations = new Map(); // Felhasználói beszélgetési kontextus tárolása
 
 router.post('/', async (req, res) => {
-    const { userId, message } = req.body;
+    const { userId, message, feedback, productId } = req.body;
 
     if (!userId || !message) {
         return res.status(400).json({ message: 'Hiányzó adatok: userId vagy message.' });
     }
 
-    // Felhasználói kontextus lekérése vagy inicializálása
-    let userContext = userConversations.get(userId) || { lastProduct: null };
-
     try {
-        // Ha az üzenet új ajánlást kér
-        if (message.toLowerCase().includes('ajánlj') || !userContext.lastProduct) {
-            const productDetails = await extractDetailsFromInput(message); // Bemenet elemzése
-            const recommendedProduct = await fetchTopProductByCategory(productDetails);
+        // 1. Modell betöltése
+        const model = await loadModel(userId);
+        let recommendedProduct = null;
 
-            if (!recommendedProduct) {
-                return res.status(200).json({
-                    message: 'Sajnos nem találtam megfelelő terméket. Próbálj másik keresési feltételt, vagy nézd meg az összes terméket!'
-                });
-            }
+        // 2. Felhasználói üzenet feldolgozása (termék keresési paraméterek kinyerése)
+        const details = await extractDetailsFromInput(message);
 
-            // Kontextus frissítése új ajánlással
-            userContext.lastProduct = recommendedProduct;
-            userConversations.set(userId, userContext);
-
+        if (Object.keys(details).length === 0) {
             return res.status(200).json({
-                message: `Ajánlom neked: ${recommendedProduct.name}.`,
-                productId: recommendedProduct._id,
-                productName: recommendedProduct.name,
-                productPrice: recommendedProduct.price,
+                message: 'Nem találtam keresési feltételeket az input alapján. Kérlek, adj meg konkrétabb információkat (pl. ár, kategória, ízjegyek).',
             });
         }
 
-        // Ha az üzenet kérdés az előző ajánlásról
-        const response = await generateContextualResponse(
-            userContext.lastProduct.description,
-            message
-        );
+        console.log("Keresési feltételek:", details);
 
-        return res.status(200).json({ message: response });
+        // 3. Termék keresése az adatbázisból
+        const product = await fetchTopProductByCategory(details);
+
+        if (!product) {
+            return res.status(200).json({
+                message: 'Nem találtam megfelelő terméket a megadott feltételek alapján. Próbálj meg más keresési szempontokat!',
+            });
+        }
+
+        // 4. Predikció és hasonló termékek kezelése
+        if (model) {
+            const flavourNotesArray = product.flavourNotes
+                .split(',')
+                .map(note => note.trim().toLowerCase());
+
+            const similarProducts = await Product.find({
+                flavourNotes: { $regex: flavourNotesArray.join('|'), $options: 'i' },
+            });
+
+            console.log('Hasonló termékek száma:', similarProducts.length);
+
+            const predictionsWithProducts = [];
+
+            for (const product of similarProducts) {
+                const input = [
+                    product.price || 0,
+                    product.alcoholContent || 0,
+                    (product.origin || '').length || 0,
+                    parseInt(product.bottleSize.replace(/\D/g, '') || 0),
+                    ...product.flavourNotes.split(',').map(note => note.trim().length || 0),
+                ];
+
+                const inputTensor = tf.tensor2d([input], [1, input.length]);
+                const prediction = model.predict(inputTensor);
+                const predictionArray = prediction.arraySync();
+
+                predictionsWithProducts.push({
+                    product: product,
+                    prediction: predictionArray[0][0],
+                });
+
+                console.log(
+                    `Termék: ${product.name}, Predikciós érték: ${predictionArray[0][0]}`
+                );
+            }
+
+            // Válasszuk ki a legmagasabb predikciós értékű terméket
+            predictionsWithProducts.sort((a, b) => b.prediction - a.prediction);
+
+            if (predictionsWithProducts.length > 0) {
+                recommendedProduct = predictionsWithProducts[0].product;
+                console.log('Legmagasabb predikciós értékű termék:', recommendedProduct.name);
+            }
+        }
+
+        // 5. Ha van visszajelzés, azt mentjük és újratanítjuk a modellt
+        if (feedback && productId) {
+            await saveFeedbackToDatabase(feedback, productId, userId);
+            console.log('Visszajelzés elmentve.');
+
+            // Modell frissítése visszajelzés alapján
+            await updateModelWithFeedback(userId);
+            console.log('Modell frissítve visszajelzések alapján.');
+        }
+
+        // 6. Válasz összeállítása
+        return res.status(200).json({
+            message: `Ajánlom neked a következő terméket: ${recommendedProduct.name} (${recommendedProduct.price} Ft). ${recommendedProduct.description}`,
+            productId: recommendedProduct._id,
+            productName: recommendedProduct.name,
+            productPrice: recommendedProduct.price,
+            followUp: {
+                question: 'Tetszik ez a termék? Ha igen, szeretnéd hozzáadni a kosaradhoz?',
+                actions: [
+                    { label: 'Igen, tedd a kosárba!', action: 'addToCart', payload: { productId: recommendedProduct._id } },
+                    { label: 'Nem, keress mást.', action: 'searchAgain' },
+                ],
+            },
+        });
     } catch (error) {
-        console.error('Hiba a beszélgetés feldolgozása során:', error);
+        console.error('Hiba történt az ajánlás folyamatában:', error);
         return res.status(500).json({ message: 'Hiba történt a kérés feldolgozása során.' });
     }
 });
-
-
-
 
 // Adatok előkészítése a modell betanításához
 const prepareTrainingData = (data) => {

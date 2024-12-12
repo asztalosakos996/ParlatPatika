@@ -14,6 +14,7 @@ const ProductPage = () => {
     const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState('');
     const [newRating, setNewRating] = useState(5);
+    const [isFavourite, setIsFavourite] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -41,6 +42,20 @@ const ProductPage = () => {
         fetchProductAndReviews();
     }, [productId]);
 
+    useEffect(() => {
+        const checkFavouriteStatus = () => {
+           
+            if (currentUser && Array.isArray(currentUser.favourites)) {
+                setIsFavourite(currentUser.favourites.includes(productId));
+            } else {
+                
+                setIsFavourite(false);
+            }
+        };
+        checkFavouriteStatus();
+    }, [currentUser, productId]);
+    
+
     const handleAddReview = async () => {
         if (!newReview.trim()) return;
 
@@ -64,14 +79,37 @@ const ProductPage = () => {
         }
     };
 
-    const handleDelete = async () => {
+    const handleFavouriteToggle = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/products/${productId}`, { method: 'DELETE' });
+            const method = isFavourite ? 'DELETE' : 'POST';
+            const response = await fetch(`http://localhost:5000/api/users/favourites/${productId}`, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+    
             if (response.ok) {
-                navigate('/');
+                setIsFavourite(!isFavourite);
+            } else {
+                console.error('Nem sikerült frissíteni a kedvencek állapotát.');
             }
-        } catch (error) {
-            console.error('Hiba a termék törlésekor:', error);
+        } catch (err) {
+            console.error('Hiba a kedvencek frissítésekor:', err);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm('Biztosan törölni szeretnéd ezt a terméket?')) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/products/${productId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    navigate('/');
+                }
+            } catch (error) {
+                console.error('Hiba a termék törlésekor:', error);
+            }
         }
     };
 
@@ -108,20 +146,27 @@ const ProductPage = () => {
                     <button className="add-to-cart-button" onClick={() => addToCart(product)}>
                         Kosárba rakom
                     </button>
-                    {isAdmin && (
-                        <div className="admin-actions">
-                            <i
-                                className="fas fa-edit"
-                                title="Szerkesztés"
-                                onClick={() => navigate(`/edit-product/${productId}`)}
-                            ></i>
-                            <i
-                                className="fas fa-trash-alt"
-                                title="Törlés"
-                                onClick={handleDelete}
-                            ></i>
-                        </div>
-                    )}
+                    <div className="admin-actions">
+                        <i
+                            className={`fas fa-star ${isFavourite ? 'favourite' : ''}`}
+                            title={isFavourite ? 'Eltávolítás a kedvencek közül' : 'Hozzáadás a kedvencekhez'}
+                            onClick={handleFavouriteToggle}
+                        ></i>
+                        {isAdmin && (
+                            <>
+                                <i
+                                    className="fas fa-edit"
+                                    title="Szerkesztés"
+                                    onClick={() => navigate(`/edit-product/${productId}`)}
+                                ></i>
+                                <i
+                                    className="fas fa-trash-alt"
+                                    title="Törlés"
+                                    onClick={handleDelete}
+                                ></i>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 

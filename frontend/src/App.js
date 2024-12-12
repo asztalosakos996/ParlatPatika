@@ -34,6 +34,7 @@ import './App.css';
 import BlogPostPage from './components/BlogPostPage';
 import MyOrders from './components/MyOrders';
 import AgeVerificationModal from './components/AgeVerificationModal';
+import FavouritesPage from './components/FavouritesPage';
 
 
 const Contact = React.lazy(() => import('./components/Contact'));
@@ -90,10 +91,7 @@ function App() {
                 <Route path="/blogs/:id" element={<BlogPostPage />} />
                 <Route path="/details" element={<UserDetails />} />
                 <Route path="/orders" element={<MyOrders />} />
-              
-
-
-
+                <Route path="/favourites" element={<FavouritesPage />} />
               </Routes>
             </div>
             <ChatWidget />
