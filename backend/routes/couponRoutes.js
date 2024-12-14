@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Coupon = require('../models/Coupon'); // Feltételezzük, hogy van egy Coupon modell
+const Coupon = require('../models/Coupon');
 
 // Új kupon létrehozása
 router.post('/', async (req, res) => {

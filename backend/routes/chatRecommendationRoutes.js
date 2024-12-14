@@ -37,7 +37,6 @@ router.post('/recommendation', async (req, res) => {
             console.log('Predikció alapján ajánlott termék ID:', prediction);
         }
 
-        // Válasz a frontendnek
         res.json({ message: recommendation });
     } catch (error) {
         console.error('Hiba történt a termék ajánlása során:', error);
@@ -178,7 +177,7 @@ router.post('/', async (req, res) => {
             }
         }
 
-        // Tároljuk az ajánlott terméket a felhasználóhoz
+        
         userConversations.set(userId, recommendedProduct);
 
         // 6. Modell újratanítása visszajelzés alapján

@@ -2,10 +2,10 @@ const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const router = express.Router();
-const Blog = require('../models/Blog'); // Blog modell
+const Blog = require('../models/Blog');
 const { generateBlogContent } = require('../services/openaiService');
 
-// Multer konfiguráció (opcionális, ha képet is feltöltesz a bloghoz)
+// Multer konfiguráció
 const path = require('path');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -21,7 +21,7 @@ const upload = multer({ storage });
 // Blogok listázása
 router.get('/', async (req, res) => {
     try {
-        const blogs = await Blog.find().sort({ createdAt: -1 }); // Legfrissebbek elöl
+        const blogs = await Blog.find().sort({ createdAt: -1 });
         res.status(200).json(blogs);
     } catch (error) {
         console.error('Hiba a blogok lekérésekor:', error);

@@ -7,10 +7,10 @@ const path = require('path');
 
 dotenv.config(); // Betölti a .env fájlt a backend mappában
 
-const productRoutes = require('./routes/productRoutes'); // Termék útvonalak importálása
-const authRoutes = require('./routes/auth'); // Felhasználói útvonalak importálása
-const orderRoutes = require('./routes/OrderRoutes'); // Rendelés útvonalak importálása
-const categoryRoutes = require('./routes/categoryRoutes'); // Kategória útvonalak importálása
+const productRoutes = require('./routes/productRoutes');
+const authRoutes = require('./routes/auth');
+const orderRoutes = require('./routes/OrderRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 const chatRecommendationRoutes = require('./routes/chatRecommendationRoutes');
 const couponRoutes = require('./routes/couponRoutes');
 const ratingRoutes = require('./routes/ratingRoutes');
@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware-ek
 app.use(cors());
-app.use(express.json()); // JSON kérések kezelése
+app.use(express.json()); 
 
 // Helmet használata a Content Security Policy beállításához
 app.use(
