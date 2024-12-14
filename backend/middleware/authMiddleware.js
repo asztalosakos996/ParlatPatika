@@ -6,21 +6,20 @@ const verifyUser = (req, res, next) => {
 
     if (!token) {
         console.log('Nincs token a kérésben. A felhasználó nem bejelentkezett.');
-        req.user = null; // Token hiányában a req.user legyen null
-        return next(); // Engedjük tovább a kérést
+        req.user = null;
+        return next();
     }
 
     try {
         const decoded = jwt.verify(token, 'your_secret_key');
         console.log('Token dekódolva:', decoded);
-        req.user = decoded; // Token érvényes, req.user beállítva
-        console.log('Felhasználó azonosítója:', req.user?.id);
+        req.user = decoded;
     } catch (error) {
         console.log('Érvénytelen token:', error.message);
-        req.user = null; // Érvénytelen token esetén is null a req.user
+        req.user = null;
     }
 
-    next(); // Mindig engedjük tovább a kérést
+    next();
 };
 
 module.exports = { verifyUser };

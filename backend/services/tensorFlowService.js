@@ -29,11 +29,9 @@ const getArchitectureAndWeights = async (userId) => {
 
 // Modell betanítása és mentése az adatbázisba
 const trainModel = async (userId, inputData, outputData) => {
-    // Ha nincs adat, dummy adatok használata az alapmodell létrehozásához
     if (!inputData.length || !outputData.length) {
-        console.warn('Üres bemenet vagy kimenet. Dummy adatokkal hozunk létre egy alapmodellt...');
-        inputData = [[0, 0, 0, 0, 0, 0, 0]]; // Dummy bemenet (például 7 feature értékkel)
-        outputData = [0]; // Dummy kimenet
+        inputData = [[0, 0, 0, 0, 0, 0, 0]];
+        outputData = [0];
     }
 
     if (inputData.length !== outputData.length) {
@@ -183,11 +181,6 @@ const updateModelWithFeedback = async (userId) => {
         console.log('Nincs elég érvényes visszajelzés a modell frissítéséhez.');
         return null;
     }
-
-    console.log('Valid Feedbacks:', validFeedbacks);
-    console.log('InputData:', inputData);
-    console.log('OutputData:', outputData);
-
     // Modell tanítása
     return await trainModel(userId, inputData, outputData);
 };
