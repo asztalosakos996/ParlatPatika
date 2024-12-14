@@ -86,7 +86,7 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        // Ha a felhasználónak már volt ajánlott terméke
+        // 1. Ellenőrizzük, hogy a felhasználónak volt-e korábbi ajánlása
         if (userConversations.has(userId)) {
             const previousRecommendation = userConversations.get(userId);
 
@@ -94,17 +94,24 @@ router.post('/', async (req, res) => {
             const isGeneralQuery = message.toLowerCase().includes('miért') || message.toLowerCase().includes('jó ajándék');
 
             if (isGeneralQuery) {
-                // OpenAI API segítségével releváns válasz generálása
                 const response = await generateContextualResponse(previousRecommendation.description, message);
                 return res.status(200).json({ message: response });
             }
         }
 
-        // 1. Modell betöltése
-        const model = await loadModel(userId);
-        let recommendedProduct = null;
+        // 2. Modell betöltése vagy létrehozása
+        let model;
+        try {
+            model = await loadModel(userId);
+            console.log('Modell sikeresen betöltve!');
+        } catch (error) {
+            console.log('Modell nem található, új modell létrehozása...');
+            const { inputs, outputs } = prepareTrainingData([]); // Kezdeti üres adatok
+            model = await trainModel(inputs, outputs);
+            console.log('Új modell sikeresen létrehozva.');
+        }
 
-        // 2. Felhasználói üzenet feldolgozása (termék keresési paraméterek kinyerése)
+        // 3. Felhasználói üzenet feldolgozása (pl. kategória, ízjegyek, ár stb.)
         const details = await extractDetailsFromInput(message);
 
         if (Object.keys(details).length === 0) {
@@ -115,7 +122,7 @@ router.post('/', async (req, res) => {
 
         console.log("Keresési feltételek:", details);
 
-        // 3. Termék keresése az adatbázisból
+        // 4. Termék keresése az adatbázisból
         const product = await fetchTopProductByCategory(details);
 
         if (!product) {
@@ -124,7 +131,9 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // 4. Predikció és hasonló termékek kezelése
+        // 5. Predikció és hasonló termékek kezelése
+        let recommendedProduct = product; // Alapértelmezett termék, ha nincs predikció
+
         if (model) {
             const flavourNotesArray = product.flavourNotes
                 .split(',')
@@ -161,7 +170,6 @@ router.post('/', async (req, res) => {
                 );
             }
 
-            // Válasszuk ki a legmagasabb predikciós értékű terméket
             predictionsWithProducts.sort((a, b) => b.prediction - a.prediction);
 
             if (predictionsWithProducts.length > 0) {
@@ -170,20 +178,21 @@ router.post('/', async (req, res) => {
             }
         }
 
-        // Tároljuk az ajánlott terméket
+        // Tároljuk az ajánlott terméket a felhasználóhoz
         userConversations.set(userId, recommendedProduct);
 
-        // 5. Ha van visszajelzés, azt mentjük és újratanítjuk a modellt
+        // 6. Modell újratanítása visszajelzés alapján
         if (feedback && productId) {
             await saveFeedbackToDatabase(feedback, productId, userId);
             console.log('Visszajelzés elmentve.');
 
-            // Modell frissítése visszajelzés alapján
-            await updateModelWithFeedback(userId);
-            console.log('Modell frissítve visszajelzések alapján.');
+            const feedbackData = await getFeedbackData(userId);
+            const { inputs, outputs } = prepareTrainingData(feedbackData);
+            model = await trainModel(inputs, outputs);
+            console.log('Modell sikeresen frissítve.');
         }
 
-        // 6. Válasz összeállítása
+        // 7. Válasz összeállítása
         return res.status(200).json({
             message: `Ajánlom neked a következő terméket: ${recommendedProduct.name} (${recommendedProduct.price} Ft). ${recommendedProduct.description}`,
             productId: recommendedProduct._id,
@@ -205,9 +214,22 @@ router.post('/', async (req, res) => {
 
 // Adatok előkészítése a modell betanításához
 const prepareTrainingData = (data) => {
+    const inputs = data.map(entry => [
+        entry.price || 0,
+        entry.alcoholContent || 0,
+        (entry.origin || '').length || 0,
+        parseInt(entry.bottleSize.replace(/\D/g, '') || 0),
+        ...entry.flavourNotes.split(',').map(note => note.trim().length || 0),
+    ]);
+    const outputs = data.map(entry => entry.feedback || 0);
+    return { inputs, outputs };
+};
+
+// Adatok előkészítése a modell betanításához
+/*const prepareTrainingData = (data) => {
     const inputs = data.map(entry => [entry.input.length]);
     const outputs = data.map(entry => [entry.productId]);
     return { inputs, outputs };
-};
+}; */
 
 module.exports = router;

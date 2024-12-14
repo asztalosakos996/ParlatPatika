@@ -204,3 +204,14 @@
     color: gold;
 }
 
+.review-card {
+    background-color: #ffffff; /* Világos háttérszín */
+    border: 1px solid #ddd; /* Halvány szegély */
+    border-radius: 8px; /* Lekerekített sarkok */
+    padding: 15px; /* Belső margó */
+    margin-bottom: 15px; /* Alsó margó az elkülönítéshez */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Árnyék a vizuális elkülönítéshez */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animáció a hoverre */
+}
+
+

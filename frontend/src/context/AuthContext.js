@@ -40,8 +40,31 @@ export const AuthProvider = ({ children }) => {
         window.location.href = '/';
     };
 
+   /* const updateUser = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+    
+        try {
+            const response = await fetch('http://localhost:5000/api/users/me', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            if (response.ok) {
+                const updatedUser = await response.json();
+                setCurrentUser(updatedUser); // Frissítsd a `currentUser`-t a szerver adataival
+            } else {
+                console.error('Nem sikerült a felhasználói adatok frissítése.');
+            }
+        } catch (err) {
+            console.error('Hiba történt a felhasználói adatok frissítésekor:', err);
+        }
+    }; */
+    
+
     return (
-        <AuthContext.Provider value={{ currentUser, login, logout }}>
+        <AuthContext.Provider value={{ currentUser, login, logout, /*updateUser*/ }}>
             {children}
         </AuthContext.Provider>
     );

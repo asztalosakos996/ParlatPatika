@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import './ReviewOrder.css';
 
 const ReviewOrder = ({ onBack, orderData }) => {
     const { clearCart } = useCart(); // Kosár kiürítésének függvénye
+    const navigate = useNavigate();
 
     
     const handleSubmit = async () => {
@@ -21,8 +23,8 @@ const ReviewOrder = ({ onBack, orderData }) => {
             const result = await response.json();
     
             if (response.ok) {
-                alert('Rendelés sikeresen véglegesítve!');
                 clearCart(); // Kosár kiürítése a rendelés sikeres leadása után
+                navigate('/order-success');
             } else {
                 alert(`Hiba történt a rendelés véglegesítése során: ${result.message}`);
             }

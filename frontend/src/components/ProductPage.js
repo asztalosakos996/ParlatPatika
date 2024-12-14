@@ -8,7 +8,7 @@ const ProductPage = () => {
     const { productId } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, updateUser } = useContext(AuthContext);
 
     const [product, setProduct] = useState(null);
     const [reviews, setReviews] = useState([]);
@@ -66,7 +66,7 @@ const ProductPage = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ text: newReview, rating: newRating }),
+                body: JSON.stringify({ text: newReview, rating: newRating, }),
             });
 
             if (response.ok) {
@@ -92,6 +92,8 @@ const ProductPage = () => {
     
             if (response.ok) {
                 setIsFavourite(!isFavourite);
+                const updatedUser = await response.json();
+                updateUser(updatedUser);
             } else {
                 console.error('Nem sikerült frissíteni a kedvencek állapotát.');
             }
@@ -176,7 +178,7 @@ const ProductPage = () => {
                     reviews.map((review, index) => (
                         <div key={index} className="review-card">
                             <p>
-                                <strong>{review.user?.username || 'Névtelen felhasználó'}</strong>
+                                <strong>{review.user?.name || 'Névtelen felhasználó'}</strong>
                             </p>
                             <div className="review-rating">
                                 {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}

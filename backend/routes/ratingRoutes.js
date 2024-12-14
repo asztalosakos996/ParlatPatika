@@ -43,7 +43,7 @@ router.get('/:productId/reviews', async (req, res) => {
             return res.status(404).json({ message: 'A termék nem található.' });
         }
 
-        const reviews = await Rating.find({ product: productId }).populate('user', 'username');
+        const reviews = await Rating.find({ product: productId }).populate('user', 'name');
         res.status(200).json(reviews);
     } catch (error) {
         console.error('Hiba az értékelések lekérésekor:', error);

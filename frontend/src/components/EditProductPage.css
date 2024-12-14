@@ -48,7 +48,7 @@ h2{
 }
 
 .edit-product-form button {
-    background-color: #007bff;
+    background-color: #28a745;
     color: #fff;
     border: none;
     padding: 12px 20px;
@@ -62,7 +62,7 @@ h2{
 }
 
 .edit-product-form button:hover {
-    background-color: #0056b3;
+    background-color: #218838;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 

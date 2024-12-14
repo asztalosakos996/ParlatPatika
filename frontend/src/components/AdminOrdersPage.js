@@ -31,11 +31,12 @@ const AdminOrdersPage = () => {
     // Szűrt rendelések
     const filteredOrders = orders.filter((order) => {
         const matchesPayment =
-            selectedPaymentMethod === '' || order.paymentMethod === selectedPaymentMethod;
+            selectedPaymentMethod === '' || order.paymentMethod?.method === selectedPaymentMethod;
         const matchesShipping =
-            selectedShippingMethod === '' || order.shippingMethod === selectedShippingMethod;
+            selectedShippingMethod === '' || order.shippingMethod?.method === selectedShippingMethod;
         return matchesPayment && matchesShipping;
     });
+    
 
     if (loading) {
         return <p>Rendelések betöltése...</p>;
@@ -82,7 +83,6 @@ const AdminOrdersPage = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Rendelés ID</th>
                         <th>Vásárló neve</th>
                         <th>Dátum</th>
                         <th>Összeg</th>
@@ -94,20 +94,15 @@ const AdminOrdersPage = () => {
                 <tbody>
                     {filteredOrders.map((order) => (
                         <tr key={order._id}>
-                        <td>{order._id}</td>
-                        <td>{order.contactInfo?.name || 'Nincs megadva név'}</td>
-                        <td>{order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Nincs adat'}</td>
-                        <td>{order.totalAmount ? `${order.totalAmount.toLocaleString()} Ft` : 'Nincs adat'}</td>
-                        <td>{order.paymentMethod || 'Nincs adat'}</td>
-                        <td>
-                            {order.shippingMethod?.method || 'Nincs adat'}
-                            {/* Szállítási adatok */}
-                        </td>
-                        <td>{order.status || 'Nincs adat'}</td>
+                            <td>{order.contactInfo?.name || 'Nincs megadva név'}</td>
+                            <td>{order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Nincs adat'}</td>
+                            <td>{order.totalAmount ? `${order.totalAmount.toLocaleString()} Ft` : 'Nincs adat'}</td>
+                            <td>{order.paymentMethod?.method ?? 'Nincs adat'}</td>
+                            <td>{order.shippingMethod?.method ?? 'Nincs adat'}</td>
+                            <td>{order.status || 'Nincs adat'}</td>
                         </tr>
                     ))}
                 </tbody>
-
             </table>
         </div>
     );

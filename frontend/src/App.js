@@ -25,7 +25,7 @@ import NewCoupon from './components/NewCoupon';
 import ManageCoupons from './components/ManageCoupons';
 import EditCouponPage from './components/EditCouponPage';
 import AdminOrdersPage from './components/AdminOrdersPage';
-import orderSuccess from './components/orderSuccess';
+import OrderSuccess from './components/orderSuccess';
 import NewBlog from './components/NewBlog';
 import ManageBlog from './components/ManageBlog';
 import EditBlog from './components/EditBlog';
@@ -84,7 +84,7 @@ function App() {
                 <Route path="/admin/manage-coupons" element={<ManageCoupons />} />
                 <Route path="/admin/edit-coupon/:couponId" element={<EditCouponPage />} />
                 <Route path="/admin/orders" element={<AdminOrdersPage />} />
-                <Route path="/order-success" element={<orderSuccess />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/admin/new-blog" element={<NewBlog />} />
                 <Route path="/admin/manage-blogs" element={<ManageBlog />} />
                 <Route path="/admin/edit-blog/:id" element={<EditBlog />} />

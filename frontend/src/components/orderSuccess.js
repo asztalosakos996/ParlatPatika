@@ -12,7 +12,7 @@ const OrderSuccess = () => {
     return (
         <div className="order-success-container">
             <h1>Sikeres rendelés!</h1>
-            <p>Köszönjük a rendelését! Hamarosan értesítjük a szállítás részleteiről.</p>
+            <p>Köszönjük a rendelésed! Hamarosan értesítjünk a szállítás részleteiről.</p>
             <button onClick={handleGoHome}>Vissza a főoldalra</button>
         </div>
     );
