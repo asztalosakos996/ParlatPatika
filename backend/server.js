@@ -10,12 +10,12 @@ dotenv.config(); // Betölti a .env fájlt a backend mappában
 const productRoutes = require('./routes/productRoutes'); // Termék útvonalak importálása
 const authRoutes = require('./routes/auth'); // Felhasználói útvonalak importálása
 const orderRoutes = require('./routes/OrderRoutes'); // Rendelés útvonalak importálása
-const categoryRoutes = require('./routes/CategoryRoutes'); // Kategória útvonalak importálása
+const categoryRoutes = require('./routes/categoryRoutes'); // Kategória útvonalak importálása
 const chatRecommendationRoutes = require('./routes/chatRecommendationRoutes');
 const couponRoutes = require('./routes/couponRoutes');
 const ratingRoutes = require('./routes/ratingRoutes');
 const blogRoutes = require('./routes/blogRoutes');
-const newsletterRoutes = require('./routes/NewletterRoutes');
+const newsletterRoutes = require('./routes/newsletterRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
